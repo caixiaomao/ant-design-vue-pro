@@ -72,7 +72,7 @@ const config = {
 }
 
 const isEmpty = function (value) {
-  if (value === '' || value === undefined || value === null) {
+  if (value === '' || value === undefined || value === null || value.trim() === '') {
     return true
   }
   return false
