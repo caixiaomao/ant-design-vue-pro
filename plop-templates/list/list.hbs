@@ -148,7 +148,7 @@ import ToolTip from '@/mixins/myToolTip'
 // eslint-disable-next-line no-unused-vars
 import { listByPage, deleteById, add, update } from '@/api/{{ properCase name }}'
 export default {
-  name: '{{ properCase name }}',
+  name: '{{ name }}',
   components: {
     STable
   },
@@ -272,17 +272,17 @@ export default {
       }) */
     },
     updateStatus (record) {
-      const patams = { id: record.id }
+      const params = { id: record.id }
       let defaultMessage = '修改状态成功'
       if (record.status === 1) {
-        patams.status = 0
+        params.status = 0
         defaultMessage = '禁用成功'
       } else {
-        patams.status = 1
+        params.status = 1
         defaultMessage = '启用成功'
       }
       // 自己实现状态修改
-      /* updateDictStatus(patams).then(res => {
+      /* updateDictStatus(params).then(res => {
         const { status, data, message } = res
         if (status === 1) {
           this.$message.success(defaultMessage)

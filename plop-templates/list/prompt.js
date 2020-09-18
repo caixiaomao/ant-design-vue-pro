@@ -1,5 +1,4 @@
-import isEmpty from 'lodash.isempty'
-module.exports = {
+const config = {
   description: '列表模块',
   prompts: [
     {
@@ -53,7 +52,7 @@ module.exports = {
         path: `src/views/${properCaseName}/index.vue`,
         templateFile: 'plop-templates/list/list.hbs',
         data: {
-          name: name,
+          name: properCaseName,
           template: data.blocks.includes('template'),
           script: data.blocks.includes('script'),
           style: data.blocks.includes('style')
@@ -64,10 +63,19 @@ module.exports = {
         path: `src/api/${lowerCaseName}.js`,
         templateFile: 'plop-templates/list/api.hbs',
         data: {
-          name: name
+          name: lowerCaseName
         }
       }
     ]
     return actions
   }
 }
+
+const isEmpty = function (value) {
+  if (value === '' || value === undefined || value === null) {
+    return true
+  }
+  return false
+}
+
+module.exports = config
