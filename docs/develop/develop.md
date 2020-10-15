@@ -8,3 +8,9 @@
 ```
 <page-header-wrapper :title="false" :breadcrumb="false" content="用户管理">
 ```
+
+## ant-design-vue 组件懒加载
+### 修改如下配置文件
+```
+src/core/lazy_use.js
+```
