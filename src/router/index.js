@@ -12,6 +12,7 @@ Router.prototype.push = function push (location, onResolve, onReject) {
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // todo 修改路由为 hash 模式，history
+  mode: 'hash',
   routes: constantRouterMap
 })
