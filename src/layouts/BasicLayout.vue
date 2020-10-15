@@ -9,11 +9,13 @@
     :i18nRender="i18nRender"
     v-bind="settings"
   >
+
     <!-- Ads begin
       广告代码 真实项目中请移除
       production remove this Ads
     -->
-    <ads v-if="isProPreviewSite && !collapsed"/>
+    <!-- todo 移除广告 -->
+    <!-- <ads v-if="isProPreviewSite && !collapsed"/>-->
     <!-- Ads end -->
 
     <!-- 1.0.0+ 版本 pro-layout 提供 API，

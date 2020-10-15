@@ -52,7 +52,7 @@ export default {
     setTimeout(() => {
       this.currentUser = {
         // todo 用户名显示调整
-        name: 'Serati Ma'
+        name: 'caixiaomao'
       }
     }, 1500)
   }
