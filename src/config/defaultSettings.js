@@ -23,7 +23,7 @@ export default {
   menu: {
     locale: false
   },
-  title: 'Ant Design Pro',
+  title: 'Cloud Miao',
   pwa: false,
   iconfontUrl: '',
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true'
