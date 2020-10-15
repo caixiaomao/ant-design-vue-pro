@@ -1,7 +1,8 @@
 <template>
   <div :class="wrpCls">
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
-    <select-lang :class="prefixCls" />
+    <!-- todo 屏蔽语言切换 -->
+    <!-- <select-lang :class="prefixCls" />-->
   </div>
 </template>
 
@@ -50,6 +51,7 @@ export default {
   mounted () {
     setTimeout(() => {
       this.currentUser = {
+        // todo 用户名显示调整
         name: 'Serati Ma'
       }
     }, 1500)
