@@ -146,7 +146,9 @@
 {{#if script}}
 <script>
   import { STable } from '@/components'
+  // todo 需要删除
   // eslint-disable-next-line no-unused-vars
+  import { listByPage, deleteById, add, update } from '@/api/{{ name }}'
   export default {
   name: '{{ name }}',
   components: {

@@ -1,12 +1,13 @@
 import { axios } from '@/utils/request'
+import { API_PREFIX } from '@/config/system'
 
 /**
-* 分页列表
+* 菜单分页列表
 * @param query 参数
 */
 export function listByPage (data, params) {
   return axios({
-    url: `/menu/listByPage`,
+    url: `${API_PREFIX.UPMS_SERVICE}/menu/page`,
     method: 'POST',
     data: data,
     params: params
@@ -14,36 +15,36 @@ export function listByPage (data, params) {
 }
 
 /**
-* 修改
-* @param body 参数
+* 修改菜单
+* @param data
 */
 export function edit (data) {
   return axios({
-    url: `/menu/edit`,
+    url: `${API_PREFIX.UPMS_SERVICE}/menu/edit`,
     method: 'POST',
     data: data
   })
 }
 
 /**
-* 添加
+* 添加菜单
 * @param body 参数
 */
 export function add (data) {
   return axios({
-    url: `/menu/add`,
+    url: `${API_PREFIX.UPMS_SERVICE}/menu/add`,
     method: 'POST',
     data: data
   })
 }
 
 /**
-* 根据id删除
-* @param 唯一 id
+* 根据 id 删除菜单
+* @param id 菜单id
 */
 export function deleteById (id) {
   return axios({
-    url: `/menu/${id}`,
+    url: `${API_PREFIX.UPMS_SERVICE}/menu/delete/${id}`,
     method: 'GET'
   })
 }

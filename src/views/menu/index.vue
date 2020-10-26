@@ -5,23 +5,38 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="名称">
-                <a-input v-model="queryParam.name" placeholder="名称"/>
+              <a-form-item label="菜单名称">
+                <a-input v-model="queryParam.name" placeholder="菜单名称"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="编码">
-                <a-input v-model="queryParam.code" placeholder="编码"/>
+              <a-form-item label="菜单标题">
+                <a-input v-model="queryParam.title" placeholder="菜单标题"/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="状态">
+                <a-form-item label="菜单编码">
+                  <a-input v-model="queryParam.code" placeholder="菜单编码"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="菜单状态">
                   <a-select v-model="queryParam.status" placeholder="请选择">
                     <a-select-option value="">全部</a-select-option>
-                    <a-select-option :value="1">有效</a-select-option>
-                    <a-select-option :value="0">无效</a-select-option>
+                    <a-select-option :value="1">启用</a-select-option>
+                    <a-select-option :value="0">禁用</a-select-option>
                   </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="菜单路径">
+                  <a-input v-model="queryParam.path" placeholder="菜单路径"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="菜单组件">
+                  <a-input v-model="queryParam.component" placeholder="菜单组件"/>
                 </a-form-item>
               </a-col>
             </template>
@@ -52,14 +67,17 @@
         :loading="loading"
         :showPagination="true"
       >
-        <template slot="index" slot-scope="text, record, index">
+        <template slot="index" slot-scope="index">
           {{ index + 1 }}
+        </template>
+        <template slot="name" slot-scope="text">
+          <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="status" slot-scope="text">
           <a-tag v-if="text === 1" color="blue">启用</a-tag>
           <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
         </template>
-        <template slot="action" slot-scope="text, record">
+        <template slot="action" slot-scope="record">
           <a-button type="primary" size="small" @click="handleEdit(record)">编辑</a-button>
           <a-divider type="vertical" />
           <a-dropdown>
@@ -142,12 +160,16 @@
 </template>
 
 <script>
-import { STable } from '@/components'
-// eslint-disable-next-line no-unused-vars
+import { STable, Ellipsis } from '@/components'
+import pick from 'lodash.pick'
+import { listByPage, deleteById, add, edit } from '@/api/menu'
+
+const fields = ['title', 'name', 'code', 'description', 'status']
 export default {
   name: 'Menu',
   components: {
-    STable
+    STable,
+    Ellipsis
   },
   props: {},
   data () {
@@ -170,7 +192,10 @@ export default {
       // 查询参数
       queryParam: {
         name: '',
+        title: '',
         code: '',
+        path: '',
+        component: '',
         status: ''
       },
       // 表头
@@ -184,9 +209,8 @@ export default {
         {
           title: '名称',
           dataIndex: 'name',
-          align: 'center',
-          sorter: true,
-          ellipsis: true
+          align: 'left',
+          scopedSlots: { customRender: 'name' }
         },
         {
           title: '编码',
@@ -225,7 +249,6 @@ export default {
       editMode: false
     }
   },
-  created () {},
   mounted () {},
   methods: {
     toggleAdvanced () {
@@ -245,25 +268,22 @@ export default {
       }
       params.pageNum = params.pageNo
       delete params.pageNo
-      // 自己实现分页查询
-      /* return getListByPage(Object.assign({}, this.queryParam), params).then(res => {
+       return listByPage(Object.assign({}, this.queryParam), params).then(res => {
         const { status, data, message } = res
         if (status === 1) {
           return data
         } else {
-          this.$message.error(res.message)
+          this.$message.error(message)
         }
         this.loading = false
       }).catch(err => {
         this.loading = false
         console.error(err)
         this.$message.error(err.message || '请求数据错误')
-      }) */
+      })
     },
     updateStatus (record) {
       const params = { id: record.id }
-      // todo 需要删除
-      // eslint-disable-next-line no-unused-vars
       let defaultMessage = '修改状态成功'
       if (record.status === 1) {
         params.status = 0
@@ -272,9 +292,8 @@ export default {
         params.status = 1
         defaultMessage = '启用成功'
       }
-      // 自己实现状态修改
-      /* updateDictStatus(params).then(res => {
-        const { status, data, message } = res
+      edit(params).then(res => {
+        const { status, message } = res
         if (status === 1) {
           this.$message.success(defaultMessage)
           this.refreshTable()
@@ -283,13 +302,12 @@ export default {
         }
       }).catch(err => {
         console.error(err)
-      }) */
+      })
     },
     handleDelete (record) {
       if (record.id) {
-        // 自己实现删除
-        /* deleteById(record.id).then(res => {
-          const { status, data, message } = res
+        deleteById(record.id).then(res => {
+          const { status, message } = res
           if (status === 1) {
             this.$message.success('删除成功')
             this.refreshTable()
@@ -298,7 +316,7 @@ export default {
           }
         }).catch(err => {
           console.error(err)
-        }) */
+        })
       } else {
         this.$message.error('id为空')
       }
@@ -310,11 +328,7 @@ export default {
       this.currentRecord = record
       this.$nextTick(() => {
         this.form.resetFields()
-        const values = this.form.getFieldsValue()
-        Object.keys(values).forEach(key => {
-          values[key] = record[key]
-        })
-        this.form.setFieldsValue(values)
+        this.form.setFieldsValue(pick(record, fields))
       })
     },
     handleAdd () {
@@ -335,9 +349,8 @@ export default {
           // 修改
           if (this.currentRecord.id) {
             values.id = this.currentRecord.id
-            // 自己实现更新
-            /* update(values).then(res => {
-              const { status, data, message } = res
+            edit(values).then(res => {
+              const { status, message } = res
               this.confirmLoading = false
               if (status === 1) {
                 this.$message.success('修改成功')
@@ -349,12 +362,11 @@ export default {
             }).catch(err => {
               this.confirmLoading = false
               console.log(err)
-            }) */
+            })
           } else {
-            // 自己实现新增
-            /* add(values).then(res => {
+            add(values).then(res => {
               this.confirmLoading = false
-              const { status, data, message } = res
+              const { status, message } = res
               if (status === 1) {
                 this.$message.success('新增成功')
                 this.visible = false
@@ -365,7 +377,7 @@ export default {
             }).catch(err => {
               this.confirmLoading = false
               console.error(err)
-            }) */
+            })
           }
         } else {
           this.$message.warn('数据填写有误')
@@ -374,7 +386,7 @@ export default {
       })
     },
     handleItem (record) {
-      this.$router.push({ path: '/item/list', query: { id: record.id } })
+      this.$router.push({ path: '/sys/menu/child', query: { id: record.id } })
     },
     refreshTable () {
       // 新增/修改 成功时，重载列表
