@@ -389,7 +389,7 @@ export default {
       this.$router.push({ path: '/sys/menu/child', query: { id: record.id } })
     },
     refreshTable () {
-      // 新增/修改 成功时，重载列表
+      // 新增/修改 成功时，刷新列表
       this.$refs.table.refresh()
     }
   }
