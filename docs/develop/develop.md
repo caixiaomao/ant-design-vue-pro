@@ -17,3 +17,6 @@ src/core/lazy_use.js
 
 ## 屏蔽正在切换主题的提示
 修改 node_modules/@ant-design-vue/pro-layout/es/utils/dynamicTheme.js 文件
+
+## 框架全局配置
+修改主题、语言等设置，修改 src/core/bootstrap.js 文件
