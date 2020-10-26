@@ -1,6 +1,5 @@
-{{#if template}}
 <template>
-  <page-header-wrapper :title="false" content="列表模板">
+  <page-header-wrapper :title="false">
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -27,14 +26,14 @@
               </a-col>
             </template>
             <a-col :md="!advanced && 8 || 24" :sm="24">
-            <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
-              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-              <a-button style="margin-left: 8px" @click="() => queryParam = {status: ''}">重置</a-button>
-              <a style="margin-left: 8px" @click="toggleAdvanced">
-                \{{ advanced ? '收起' : '展开' }}
-                <a-icon :type="advanced ? 'up' : 'down'"/>
-              </a>
-            </span>
+              <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+                <a-button style="margin-left: 8px" @click="() => queryParam = {status: ''}">重置</a-button>
+                <a style="margin-left: 8px" @click="toggleAdvanced">
+                  {{ advanced ? '收起' : '展开' }}
+                  <a-icon :type="advanced ? 'up' : 'down'"/>
+                </a>
+              </span>
             </a-col>
           </a-row>
         </a-form>
@@ -54,9 +53,9 @@
         :showPagination="true"
       >
         <template slot="index" slot-scope="text, record, index">
-          \{{ index + 1 }}
+          {{ index + 1 }}
         </template>
-        <template slot="status" slot-scope="text, record">
+        <template slot="status" slot-scope="text">
           <a-tag v-if="text === 1" color="blue">启用</a-tag>
           <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
         </template>
@@ -128,9 +127,9 @@
           >
             <a-select
               v-decorator="[
-              'status',
-              { initialValue: 1, rules: [{ required: true, message: '状态不能为空' }] }
-            ]"
+                'status',
+                { initialValue: 1, rules: [{ required: true, message: '状态不能为空' }] }
+              ]"
             >
               <a-select-option :value="1">正常</a-select-option>
               <a-select-option :value="0">禁用</a-select-option>
@@ -141,14 +140,12 @@
     </a-card>
   </page-header-wrapper>
 </template>
-{{/if}}
 
-{{#if script}}
 <script>
-  import { STable } from '@/components'
-  // eslint-disable-next-line no-unused-vars
-  export default {
-  name: '{{ name }}',
+import { STable } from '@/components'
+// eslint-disable-next-line no-unused-vars
+export default {
+  name: 'Menu',
   components: {
     STable
   },
@@ -195,8 +192,7 @@
           title: '编码',
           dataIndex: 'code',
           align: 'center',
-          sorter: true,
-          ellipsis: true
+          sorter: true
         },
         {
           title: '状态',
@@ -387,9 +383,6 @@
   }
 }
 </script>
-{{/if}}
 
-{{#if style}}
 <style lang="scss" scoped>
 </style>
-{{/if}}
