@@ -32,6 +32,7 @@ module.exports = {
     'vue/no-use-v-if-with-v-for': 0,
     'vue/html-closing-bracket-newline': 0,
     'vue/no-parsing-error': 0,
+    'vue/no-unused-vars': 'off',
     'no-tabs': 0,
     'quotes': [
       2,

@@ -6,6 +6,6 @@ const GATEWAY = '/gateway'
  */
 export const API_PREFIX = {
   GATEWAY_SERVICE: GATEWAY,
-  UPMS_SERVICE: '/upms_service',
+  UPMS_SERVICE: GATEWAY + '/upms_service',
   SYSTEM_SERVICE: GATEWAY + '/system_service'
 }

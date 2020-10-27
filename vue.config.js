@@ -103,12 +103,12 @@ const vueConfig = {
   devServer: {
     port: 5000,
     proxy: {
-      '/upms-service': {
+      '/upms_service': {
         target: 'http://127.0.0.1:7004',
         ws: false,
         changeOrigin: true,
         pathRewrite: {
-          '^/upms-service': ''
+          '^/gateway/upms_service': ''
         }
       }
     }

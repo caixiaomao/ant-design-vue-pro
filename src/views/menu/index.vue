@@ -67,17 +67,17 @@
         :loading="loading"
         :showPagination="true"
       >
-        <template slot="index" slot-scope="index">
+        <template slot="index" slot-scope="text, record, index">
           {{ index + 1 }}
         </template>
-        <template slot="name" slot-scope="text">
+        <template slot="name" slot-scope="text, record, index">
           <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
-        <template slot="status" slot-scope="text">
+        <template slot="status" slot-scope="text, record, index">
           <a-tag v-if="text === 1" color="blue">启用</a-tag>
           <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
         </template>
-        <template slot="action" slot-scope="record">
+        <template slot="action" slot-scope="text, record, index">
           <a-button type="primary" size="small" @click="handleEdit(record)">编辑</a-button>
           <a-divider type="vertical" />
           <a-dropdown>
@@ -85,9 +85,6 @@
               更多 <a-icon type="down" />
             </a>
             <a-menu slot="overlay">
-              <a-menu-item>
-                <a-button type="dashed" size="small" @click="handleItem(record)">子项</a-button>
-              </a-menu-item>
               <a-menu-item>
                 <a-button v-if="record.status === 0" type="dashed" size="small" @click="updateStatus(record)">启用</a-button>
                 <a-button v-else-if="record.status === 1" type="dashed" size="small" @click="updateStatus(record)">禁用</a-button>
@@ -207,16 +204,15 @@ export default {
           scopedSlots: { customRender: 'index' }
         },
         {
-          title: '名称',
-          dataIndex: 'name',
+          title: '标题',
+          dataIndex: 'title',
           align: 'left',
           scopedSlots: { customRender: 'name' }
         },
         {
-          title: '编码',
-          dataIndex: 'code',
-          align: 'center',
-          sorter: true
+          title: '名称',
+          dataIndex: 'name',
+          align: 'left'
         },
         {
           title: '状态',
@@ -266,9 +262,7 @@ export default {
       if (params.sortField === 'createTime') {
         params.sortField = 'create_time'
       }
-      params.pageNum = params.pageNo
-      delete params.pageNo
-       return listByPage(Object.assign({}, this.queryParam), params).then(res => {
+      return listByPage(Object.assign(this.queryParam, params)).then(res => {
         const { status, data, message } = res
         if (status === 1) {
           return data
@@ -384,9 +378,6 @@ export default {
           this.confirmLoading = false
         }
       })
-    },
-    handleItem (record) {
-      this.$router.push({ path: '/sys/menu/child', query: { id: record.id } })
     },
     refreshTable () {
       // 新增/修改 成功时，刷新列表

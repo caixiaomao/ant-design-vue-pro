@@ -5,12 +5,11 @@ import { API_PREFIX } from '@/config/system'
 * 菜单分页列表
 * @param query 参数
 */
-export function listByPage (data, params) {
+export function listByPage (data) {
   return axios({
     url: `${API_PREFIX.UPMS_SERVICE}/api/menu/page`,
     method: 'POST',
-    data: data,
-    params: params
+    data: data
   })
 }
 
