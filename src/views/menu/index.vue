@@ -112,112 +112,38 @@
         @ok="handleOk"
         @cancel="visible = false"
       >
-        <a-form
+        <a-form-model
           :form="form"
+          :model="formData"
+          :rules="rules"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
         >
-          <a-form-item
+          <a-form-model-item
+            ref="title"
+            label="菜单标题"
+            required
+            prop="title"
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
-            label="菜单标题"
           >
             <a-input
-              v-decorator="['name', { rules: [{ required: true, message: '菜单标题不能为空' }] }]"
+              v-model="formData.title"
               placeholder="请输入菜单标题"
             />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          </a-form-model-item>
+          <a-form-model-item
+            ref="name"
             label="菜单名称"
+            required
+            prop="name"
           >
             <a-input
-              v-decorator="['code', { rules: [{ required: true, message: '菜单名称不能为空' }] }]"
+              v-model="formData.name"
               placeholder="请输入菜单名称"
             />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="菜单路径"
-          >
-            <a-input
-              v-decorator="['path', { rules: [{ required: true, message: '菜单路径不能为空' }] }]"
-              placeholder="请输入菜单路径"
-            />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="菜单组件"
-          >
-            <a-input
-              v-decorator="['component', { rules: [{ required: true, message: '菜单组件不能为空' }] }]"
-              placeholder="请输入菜单组件"
-            />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="菜单排序"
-          >
-            <a-input-number
-              :max="9999"
-              v-decorator="['sort', { initialValue: 1, rules: [{ required: true, message: '菜单排序不能为空' }] }]"
-              placeholder="请输入菜单排序"
-            />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="是否隐藏"
-          >
-            <a-switch
-              checked-children="是"
-              un-checked-children="否"
-              default-checked
-              v-decorator="['hidden', { initialValue: true, rules: [{ required: true, message: '是否隐藏不能为空' }] }]"
-            />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="是否缓存"
-          >
-            <a-switch
-              checked-children="是"
-              un-checked-children="否"
-              default-checked
-              v-decorator="['keepAlive', { valuePropName: 'checked', rules: [{ required: true, message: '是否缓存不能为空' }] }]"
-            />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="是否隐藏子菜单"
-          >
-            <a-switch
-              checked-children="是"
-              un-checked-children="否"
-              default-checked
-              v-decorator="['hideChildren', { valuePropName: 'checked', rules: [{ required: true, message: '是否隐藏子菜单不能为空' }] }]"
-            />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="菜单状态"
-          >
-            <a-select
-              v-decorator="[
-                'status',
-                { initialValue: 1, rules: [{ required: true, message: '菜单状态不能为空' }] }
-              ]"
-            >
-              <a-select-option :value="1">正常</a-select-option>
-              <a-select-option :value="0">禁用</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-form>
+          </a-form-model-item>
+        </a-form-model>
       </a-modal>
     </a-card>
   </page-header-wrapper>
@@ -251,6 +177,21 @@ export default {
         sm: { span: 16 }
       },
       form: this.$form.createForm(this),
+      formData: {
+        name: '',
+        title: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: 'Please input Activity name', trigger: 'blur' },
+          { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+        ],
+        region: [{ required: true, message: 'Please select Activity zone', trigger: 'change' }],
+        resource: [
+          { required: true, message: 'Please select activity resource', trigger: 'change' }
+        ],
+        desc: [{ required: true, message: 'Please input activity form', trigger: 'blur' }]
+      },
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
