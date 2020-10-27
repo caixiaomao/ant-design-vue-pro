@@ -118,32 +118,99 @@
           <a-form-item
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
-            label="名称"
+            label="菜单标题"
           >
             <a-input
-              v-decorator="['name', { rules: [{ required: true, message: '名称不能为空' }] }]"
-              placeholder="请输入名称"
+              v-decorator="['name', { rules: [{ required: true, message: '菜单标题不能为空' }] }]"
+              placeholder="请输入菜单标题"
             />
           </a-form-item>
           <a-form-item
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
-            label="编码"
+            label="菜单名称"
           >
             <a-input
-              v-decorator="['code', { rules: [{ required: true, message: '编码不能为空' }] }]"
-              placeholder="请输入编码"
+              v-decorator="['code', { rules: [{ required: true, message: '菜单名称不能为空' }] }]"
+              placeholder="请输入菜单名称"
             />
           </a-form-item>
           <a-form-item
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
-            label="状态"
+            label="菜单路径"
+          >
+            <a-input
+              v-decorator="['path', { rules: [{ required: true, message: '菜单路径不能为空' }] }]"
+              placeholder="请输入菜单路径"
+            />
+          </a-form-item>
+          <a-form-item
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            label="菜单组件"
+          >
+            <a-input
+              v-decorator="['component', { rules: [{ required: true, message: '菜单组件不能为空' }] }]"
+              placeholder="请输入菜单组件"
+            />
+          </a-form-item>
+          <a-form-item
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            label="菜单排序"
+          >
+            <a-input-number
+              :max="9999"
+              v-decorator="['sort', { initialValue: 1, rules: [{ required: true, message: '菜单排序不能为空' }] }]"
+              placeholder="请输入菜单排序"
+            />
+          </a-form-item>
+          <a-form-item
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            label="是否隐藏"
+          >
+            <a-switch
+              checked-children="是"
+              un-checked-children="否"
+              default-checked
+              v-decorator="['hidden', { initialValue: true, rules: [{ required: true, message: '是否隐藏不能为空' }] }]"
+            />
+          </a-form-item>
+          <a-form-item
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            label="是否缓存"
+          >
+            <a-switch
+              checked-children="是"
+              un-checked-children="否"
+              default-checked
+              v-decorator="['keepAlive', { valuePropName: 'checked', rules: [{ required: true, message: '是否缓存不能为空' }] }]"
+            />
+          </a-form-item>
+          <a-form-item
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            label="是否隐藏子菜单"
+          >
+            <a-switch
+              checked-children="是"
+              un-checked-children="否"
+              default-checked
+              v-decorator="['hideChildren', { valuePropName: 'checked', rules: [{ required: true, message: '是否隐藏子菜单不能为空' }] }]"
+            />
+          </a-form-item>
+          <a-form-item
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            label="菜单状态"
           >
             <a-select
               v-decorator="[
                 'status',
-                { initialValue: 1, rules: [{ required: true, message: '状态不能为空' }] }
+                { initialValue: 1, rules: [{ required: true, message: '菜单状态不能为空' }] }
               ]"
             >
               <a-select-option :value="1">正常</a-select-option>
