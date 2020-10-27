@@ -101,16 +101,17 @@ const vueConfig = {
   },
 
   devServer: {
-    // development server port 8000
-    port: 8000,
-    '/upms-service': {
-      target: 'http://127.0.0.1:8003',
-      ws: false,
-      changeOrigin: true,
-      pathRewrite: {
-        '^/upms-service': ''
+    port: 5000,
+    proxy: {
+      '/upms-service': {
+        target: 'http://127.0.0.1:7004',
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/upms-service': ''
+        }
       }
-    },
+    }
   },
 
   // disable source map in production

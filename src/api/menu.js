@@ -7,7 +7,7 @@ import { API_PREFIX } from '@/config/system'
 */
 export function listByPage (data, params) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/menu/page`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/page`,
     method: 'POST',
     data: data,
     params: params
