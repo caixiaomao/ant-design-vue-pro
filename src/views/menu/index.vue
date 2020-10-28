@@ -99,20 +99,15 @@
         </template>
       </s-table>
 
-      <!--编辑对话框-->
-      <a-modal
-        v-model="visible"
+      <a-drawer
         :title="modalTitle"
-        okText="确定"
-        cancelText="取消"
-        :width="800"
-        :destroyOnClose="false"
+        :width="650"
+        :visible="drawerVisible"
         :maskClosable="false"
-        :confirmLoading="confirmLoading"
-        @ok="handleOk"
-        @cancel="visible = false"
+        @close="drawerClose"
       >
         <a-form-model
+          ref="form"
           :form="form"
           :model="formData"
           :rules="rules"
@@ -135,7 +130,6 @@
           <a-form-model-item
             ref="name"
             label="菜单名称"
-            required
             prop="name"
           >
             <a-input
@@ -143,18 +137,129 @@
               placeholder="请输入菜单名称"
             />
           </a-form-model-item>
+          <a-form-model-item
+            ref="path"
+            label="菜单路径"
+            prop="path"
+          >
+            <a-input
+              v-model="formData.path"
+              placeholder="请输入菜单路径"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="component"
+            label="菜单组件"
+            prop="component"
+          >
+            <a-input
+              v-model="formData.component"
+              placeholder="请输入菜单组件"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="redirect"
+            label="重定向路径"
+            prop="redirect"
+          >
+            <a-input
+              v-model="formData.redirect"
+              placeholder="请输入重定向路径"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="icon"
+            label="菜单图标"
+            prop="icon"
+          >
+            <a-input
+              v-model="formData.icon"
+              placeholder="请输入菜单图标"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="sort"
+            label="菜单排序"
+            prop="sort"
+          >
+            <a-input-number
+              v-model="formData.sort"
+              :defaultValue="1"
+              :max="9999"
+              placeholder="请输入菜单排序"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="status"
+            label="是否启用"
+            prop="status"
+          >
+            <a-switch
+              checked-children="启用"
+              un-checked-children="禁用"
+              default-checked
+              v-model="formData.status"/>
+          </a-form-model-item>
+          <a-form-model-item
+            ref="hidden"
+            label="是否隐藏"
+            prop="hidden"
+          >
+            <a-switch
+              checked-children="隐藏"
+              un-checked-children="显示"
+              v-model="formData.hidden"/>
+          </a-form-model-item>
+          <a-form-model-item
+            ref="hideChildren"
+            label="是否隐藏子菜单"
+            prop="hideChildren"
+          >
+            <a-switch
+              checked-children="隐藏"
+              un-checked-children="显示"
+              v-model="formData.hideChildren"/>
+          </a-form-model-item>
+          <a-form-model-item
+            ref="description"
+            label="菜单描述"
+            prop="description"
+          >
+            <a-textarea
+              :rows="2"
+              v-model="formData.description"
+              placeholder="请输入菜单描述"
+            />
+          </a-form-model-item>
         </a-form-model>
-      </a-modal>
+        <div
+          :style="{
+            position: 'absolute',
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            borderTop: '1px solid #e9e9e9',
+            padding: '10px 16px',
+            background: '#fff',
+            textAlign: 'right',
+            zIndex: 1,
+          }"
+        >
+          <a-button :style="{ marginRight: '10px' }" @click="drawerClose">
+            取消
+          </a-button>
+          <a-button :loading="confirmLoading" type="primary" @click="handleOk">
+            确定
+          </a-button>
+        </div></a-drawer>
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
 import { STable, Ellipsis } from '@/components'
-import pick from 'lodash.pick'
 import { listByPage, deleteById, add, edit } from '@/api/menu'
 
-const fields = ['title', 'name', 'code', 'description', 'status']
 export default {
   name: 'Menu',
   components: {
@@ -166,6 +271,7 @@ export default {
     return {
       loading: false,
       visible: false,
+      drawerVisible: false,
       confirmLoading: false,
       modalTitle: '',
       labelCol: {
@@ -179,18 +285,53 @@ export default {
       form: this.$form.createForm(this),
       formData: {
         name: '',
-        title: ''
+        title: '',
+        path: '',
+        icon: '',
+        component: '',
+        redirect: '',
+        hidden: false,
+        hideChildren: false,
+        keepAlive: false,
+        status: true,
+        sort: 1,
+        description: ''
       },
       rules: {
+        title: [
+          { required: true, message: '请输入菜单标题', trigger: 'blur' },
+          { max: 30, message: '菜单标题长度不能超过30', trigger: 'blur' }
+        ],
         name: [
-          { required: true, message: 'Please input Activity name', trigger: 'blur' },
-          { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+          { required: true, message: '请输入菜单名称', trigger: 'blur' },
+          { max: 30, message: '菜单名称长度不能超过30', trigger: 'blur' }
         ],
-        region: [{ required: true, message: 'Please select Activity zone', trigger: 'change' }],
-        resource: [
-          { required: true, message: 'Please select activity resource', trigger: 'change' }
+        path: [
+          { required: true, message: '请输入菜单路径', trigger: 'blur' },
+          { max: 100, message: '菜单路径长度不能超过100', trigger: 'blur' }
         ],
-        desc: [{ required: true, message: 'Please input activity form', trigger: 'blur' }]
+        component: [
+          { required: true, message: '请输入菜单组件', trigger: 'blur' },
+          { max: 100, message: '菜单组件长度不能超过100', trigger: 'blur' }
+        ],
+        hidden: [
+          { required: true, message: '是否隐藏不能为空', trigger: 'blur' }
+        ],
+        hideChildren: [
+          { required: true, message: '是否隐藏子菜单不能为空', trigger: 'blur' }
+        ],
+        keepAlive: [
+          { required: true, message: '是否缓存不能为空', trigger: 'blur' }
+        ],
+        status: [
+          { required: true, message: '是否启用不能为空', trigger: 'blur' }
+        ],
+        sort: [
+          { required: true, message: '菜单排序不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { max: 100, message: '菜单描述长度不能超过100', trigger: 'blur' }
+        ]
       },
       // 高级搜索 展开/关闭
       advanced: false,
@@ -246,9 +387,6 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      defaultRecord: {
-        status: 1
-      },
       currentRecord: {},
       editMode: false
     }
@@ -328,50 +466,44 @@ export default {
       this.visible = true
       this.editMode = true
       this.currentRecord = record
-      this.$nextTick(() => {
-        this.form.resetFields()
-        this.form.setFieldsValue(pick(record, fields))
-      })
+      this.formData = record
     },
     handleAdd () {
       this.modalTitle = '新增'
-      this.visible = true
+      // this.visible = true
+      this.drawerVisible = true
       this.editMode = false
       this.currentRecord = {}
-      this.$nextTick(() => {
-        // 清空 form 值，防止在弹框 destroyOnClose="false" 的配置下显示之前的内容
-        this.form.resetFields()
-        this.form.setFieldsValue(this.defaultRecord)
-      })
     },
     handleOk (e) {
       this.confirmLoading = true
-      this.form.validateFields((err, values) => {
-        if (!err) {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
           // 修改
+          const data = Object.assign({}, this.formData)
           if (this.currentRecord.id) {
-            values.id = this.currentRecord.id
-            edit(values).then(res => {
+            data.id = this.currentRecord.id
+            edit(data).then(res => {
               const { status, message } = res
               this.confirmLoading = false
               if (status === 1) {
                 this.$message.success('修改成功')
-                this.visible = false
+                this.drawerVisible = false
                 this.refreshTable()
               } else {
                 this.$message.error(message)
               }
             }).catch(err => {
               this.confirmLoading = false
-              console.log(err)
+              console.error(err)
             })
           } else {
-            add(values).then(res => {
+            add(data).then(res => {
               this.confirmLoading = false
               const { status, message } = res
               if (status === 1) {
                 this.$message.success('新增成功')
-                this.visible = false
+                this.drawerVisible = false
                 this.refreshTable()
               } else {
                 this.$message.error(message)
@@ -382,14 +514,16 @@ export default {
             })
           }
         } else {
-          this.$message.warn('数据填写有误')
+          this.$message.warn('数据填写有误，请检查')
           this.confirmLoading = false
         }
       })
     },
     refreshTable () {
-      // 新增/修改 成功时，刷新列表
       this.$refs.table.refresh()
+    },
+    drawerClose () {
+      this.drawerVisible = false
     }
   }
 }

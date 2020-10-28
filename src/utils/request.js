@@ -26,8 +26,8 @@ const errorHandler = (error) => {
     }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.error({
-        message: 'Unauthorized',
-        description: 'Authorization verification failed'
+        message: '401',
+        description: data.message || '未认证，禁止访问'
       })
       if (token) {
         store.dispatch('Logout').then(() => {

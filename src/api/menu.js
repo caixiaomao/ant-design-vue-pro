@@ -19,7 +19,7 @@ export function listByPage (data) {
 */
 export function edit (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/menu/edit`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/edit`,
     method: 'POST',
     data: data
   })
@@ -31,7 +31,7 @@ export function edit (data) {
 */
 export function add (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/menu/add`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/add`,
     method: 'POST',
     data: data
   })
@@ -43,7 +43,7 @@ export function add (data) {
 */
 export function deleteById (id) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/menu/delete/${id}`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/delete/${id}`,
     method: 'GET'
   })
 }
