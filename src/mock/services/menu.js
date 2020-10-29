@@ -2,11 +2,20 @@ import Mock from 'mockjs2'
 import { getQueryParameters, randomRange, commonBuilder } from '../util'
 
 const menuList = (options) => {
+  // eslint-disable-next-line no-unused-vars
   const queryParameters = getQueryParameters(options)
-  console.log('queryParameters', queryParameters)
-  const total = randomRange(5, 50)
+  // console.log('queryParameters', queryParameters)
+  const paramsBody = options.body
+  let pageSize = 10
+  let pageNum = 1
+  if (paramsBody) {
+    const _paramsBody = JSON.parse(paramsBody)
+    pageSize = _paramsBody.pageSize
+    pageNum = _paramsBody.pageNum
+  }
   const list = []
-  for (let i = 0; i < total; i++) {
+  const randomDataCount = randomRange(1, pageSize)
+  for (let i = 0; i < randomDataCount; i++) {
     const obj = {
       'id': Mock.mock('@increment(0)'),
       'parentId': null,
@@ -28,9 +37,9 @@ const menuList = (options) => {
     list.push(obj)
   }
   const page = {
-    total: total,
-    pageNum: 1,
-    pageSize: 10,
+    total: Mock.mock('@integer(1, 200)'),
+    pageNum: pageNum,
+    pageSize: pageSize,
     list: []
   }
   page.list = list

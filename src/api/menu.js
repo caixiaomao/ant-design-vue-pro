@@ -6,6 +6,7 @@ import { API_PREFIX } from '@/config/system'
 * @param query 参数
 */
 export function listByPage (data) {
+  // todo mock接口 后续需要移除
   return axios({
     url: `/mock/api/menu/page`,
     method: 'POST',

@@ -177,7 +177,7 @@ export default {
           // 当情况满足时，表示数据不满足分页大小，关闭 table 分页功能
           try {
             // todo 修改
-            if ((['auto', true].includes(this.showPagination) && r.data.total <= (r.pageNum * this.localPagination.pageSize))) {
+            if ((['auto', true].includes(this.showPagination) && r.total <= (r.pageNum * this.localPagination.pageSize))) {
               this.localPagination.hideOnSinglePage = true
             }
           } catch (e) {

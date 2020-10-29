@@ -435,6 +435,7 @@ export default {
         params.sortField = 'create_time'
       }
       return listByPage(Object.assign(this.queryParam, params)).then(res => {
+        console.log('menu page', res)
         const { status, data, message } = res
         if (status === 1) {
           return data
