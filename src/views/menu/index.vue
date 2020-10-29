@@ -108,6 +108,7 @@
       >
         <a-form-model
           ref="form"
+          layout="vertical"
           :form="form"
           :model="formData"
           :rules="rules"
@@ -194,31 +195,56 @@
             label="是否启用"
             prop="status"
           >
-            <a-switch
-              checked-children="启用"
-              un-checked-children="禁用"
-              default-checked
-              v-model="formData.status"/>
+            <a-radio-group v-model="formData.status" :default-value="1">
+              <a-radio :value="1">
+                是
+              </a-radio>
+              <a-radio :value="0">
+                否
+              </a-radio>
+            </a-radio-group>
+          </a-form-model-item>
+          <a-form-model-item
+            ref="keepAlive"
+            label="是否缓存"
+            prop="hidden"
+          >
+            <a-radio-group v-model="formData.keepAlive" :default-value="0">
+              <a-radio :value="1">
+                是
+              </a-radio>
+              <a-radio :value="0">
+                否
+              </a-radio>
+            </a-radio-group>
           </a-form-model-item>
           <a-form-model-item
             ref="hidden"
             label="是否隐藏"
             prop="hidden"
           >
-            <a-switch
-              checked-children="隐藏"
-              un-checked-children="显示"
-              v-model="formData.hidden"/>
+            <a-radio-group v-model="formData.hidden" :default-value="0">
+              <a-radio :value="1">
+                是
+              </a-radio>
+              <a-radio :value="0">
+                否
+              </a-radio>
+            </a-radio-group>
           </a-form-model-item>
           <a-form-model-item
             ref="hideChildren"
             label="是否隐藏子菜单"
             prop="hideChildren"
           >
-            <a-switch
-              checked-children="隐藏"
-              un-checked-children="显示"
-              v-model="formData.hideChildren"/>
+            <a-radio-group v-model="formData.hideChildren" :default-value="0">
+              <a-radio :value="1">
+                是
+              </a-radio>
+              <a-radio :value="0">
+                否
+              </a-radio>
+            </a-radio-group>
           </a-form-model-item>
           <a-form-model-item
             ref="description"
@@ -226,7 +252,7 @@
             prop="description"
           >
             <a-textarea
-              :rows="2"
+              :rows="3"
               v-model="formData.description"
               placeholder="请输入菜单描述"
             />
@@ -290,10 +316,10 @@ export default {
         icon: '',
         component: '',
         redirect: '',
-        hidden: false,
-        hideChildren: false,
-        keepAlive: false,
-        status: true,
+        hidden: 0,
+        hideChildren: 0,
+        keepAlive: 0,
+        status: 1,
         sort: 1,
         description: ''
       },

@@ -36,3 +36,26 @@ export const getQueryParameters = (options) => {
 export const getBody = (options) => {
   return options.body && JSON.parse(options.body)
 }
+
+// todo mock返回结果
+const commonResponseBody = {
+  message: '操作成功',
+  timestamp: 0,
+  data: null,
+  status: 1
+}
+
+export const commonBuilder = (data, message, status = 1, headers = {}) => {
+  commonResponseBody.data = data
+  if (message !== undefined && message !== null) {
+    commonResponseBody.message = message
+  }
+  if (status !== undefined && status !== 0) {
+    commonResponseBody.status = status
+  }
+  if (headers !== null && typeof headers === 'object' && Object.keys(headers).length > 0) {
+    commonResponseBody._headers = headers
+  }
+  commonResponseBody.timestamp = new Date().getTime()
+  return commonResponseBody
+}
