@@ -1,5 +1,5 @@
 import Mock from 'mockjs2'
-import { builder, getQueryParameters, randomRange } from '../util'
+import { getQueryParameters, randomRange, commonBuilder } from '../util'
 
 const menuList = (options) => {
   const queryParameters = getQueryParameters(options)
@@ -8,7 +8,7 @@ const menuList = (options) => {
   const list = []
   for (let i = 0; i < total; i++) {
     const obj = {
-      'id': Mock.mock('@natural(1, 999)'),
+      'id': Mock.mock('@increment(0)'),
       'parentId': null,
       'title': Mock.mock('@cword(2, 5)'),
       'name': Mock.mock('@string("upper", 5)'),
@@ -34,7 +34,7 @@ const menuList = (options) => {
     list: []
   }
   page.list = list
-  return builder(page)
+  return commonBuilder(page)
 }
 
 Mock.mock(/\/mock\/api\/menu\/page/, 'post', menuList)
