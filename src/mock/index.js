@@ -15,9 +15,10 @@ if (process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'tr
   require('./services/other')
   require('./services/tagCloud')
   require('./services/article')
-
+  // 菜单数据mock
+  require('./services/menu')
   Mock.setup({
-    timeout: 800 // setter delay time
+    timeout: '50-1000' // 响应时间在50-1000毫秒内
   })
   console.log('[antd-pro] mock mounted')
 }

@@ -20,3 +20,6 @@ src/core/lazy_use.js
 
 ## 框架全局配置
 修改主题、语言等设置，修改 src/core/bootstrap.js 文件
+
+## mockjs 示例
+http://mockjs.com/examples.html

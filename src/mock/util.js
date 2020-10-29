@@ -59,3 +59,8 @@ export const commonBuilder = (data, message, status = 1, headers = {}) => {
   commonResponseBody.timestamp = new Date().getTime()
   return commonResponseBody
 }
+
+// 生成指定区间随机数
+export function randomRange (min, max) {
+  return Math.floor(Math.random() * (max - min)) + min
+}
