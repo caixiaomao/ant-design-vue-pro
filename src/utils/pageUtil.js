@@ -4,9 +4,18 @@
  * @returns {{}}
  */
 export function formatPageParams (params) {
-  const pageParams = {}
+  const pageParams = {
+    pageNum: 1,
+    pageSize: 10
+  }
   if (params === null || params === undefined) {
     return pageParams
+  }
+  if (params.pageNum) {
+    pageParams.pageNum = params.pageNum
+  }
+  if (params.pageSize) {
+    pageParams.pageSize = params.pageSize
   }
   if (params.sortOrder === 'ascend') {
     pageParams.sortOrder = 'asc'

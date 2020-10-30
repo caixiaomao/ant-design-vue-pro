@@ -81,27 +81,30 @@
           <a-button type="primary" size="small" @click="handleEdit(record)">编辑</a-button>
           <a-divider type="vertical" />
           <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多 <a-icon type="down" />
-            </a>
             <a-menu slot="overlay">
-              <a-menu-item>
-                <a-button v-if="record.status === 0" type="dashed" size="small" @click="updateStatus(record)">启用</a-button>
-                <a-button v-else-if="record.status === 1" type="dashed" size="small" @click="updateStatus(record)">禁用</a-button>
+              <a-menu-item v-if="record.status === 0" @click="updateStatus(record)">
+                启用
               </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除？" okText="确定" cancelText="取消" @confirm="handleDelete(record)">
-                  <a-button type="danger" size="small">删除</a-button>
-                </a-popconfirm>
+              <a-menu-item v-if="record.status === 1" @click="updateStatus(record)">
+                禁用
               </a-menu-item>
+              <a-popconfirm title="确定删除？" okText="确定" cancelText="取消" @confirm="handleDelete(record)">
+                <a-menu-item>
+                  删除
+                </a-menu-item>
+              </a-popconfirm>
             </a-menu>
+            <a-button size="small">
+              更多
+              <a-icon type="down" />
+            </a-button>
           </a-dropdown>
         </template>
       </s-table>
 
       <a-drawer
         :title="modalTitle"
-        :width="650"
+        :width="600"
         :visible="drawerVisible"
         :maskClosable="false"
         @close="drawerClose"
@@ -173,9 +176,11 @@
             label="菜单图标"
             prop="icon"
           >
-            <a-input
+            <a-input-search
+              placeholder="请选择菜单图标"
+              enter-button
+              @search="searchIcon"
               v-model="formData.icon"
-              placeholder="请输入菜单图标"
             />
           </a-form-model-item>
           <a-form-model-item
@@ -278,26 +283,44 @@
             确定
           </a-button>
         </div></a-drawer>
+
+      <a-modal
+        v-model="iconModalVisible"
+        title="选择图标"
+        okText="确定"
+        cancelText="取消"
+        :width="800"
+        :destroyOnClose="false"
+        :maskClosable="false"
+        @ok="iconOk"
+        @cancel="iconModalVisible = false"
+      >
+        <icon-selector
+          v-model="selectedIcon"
+          @change="handleIconChange" />
+      </a-modal>
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
-import { STable, Ellipsis } from '@/components'
-import { listByPage, deleteById, add, edit } from '@/api/menu'
+import { STable, Ellipsis, IconSelector } from '@/components'
+import { listByPage, deleteById, add, update } from '@/api/menu'
 import { formatPageParams } from '@/utils/pageUtil'
 
 export default {
   name: 'Menu',
   components: {
     STable,
-    Ellipsis
+    Ellipsis,
+    IconSelector
   },
   props: {},
   data () {
     return {
+      selectedIcon: '',
       loading: false,
-      visible: false,
+      iconModalVisible: false,
       drawerVisible: false,
       confirmLoading: false,
       modalTitle: '',
@@ -409,8 +432,9 @@ export default {
         },
         {
           title: '操作',
-          width: '150px',
+          width: '200px',
           dataIndex: 'action',
+          align: 'center',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -428,7 +452,7 @@ export default {
       this.loading = true
       const pageParams = formatPageParams(params)
       return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
-        console.log('menu page', res)
+        console.log('menu 分页列表', res)
         const { status, data, message } = res
         if (status === 1) {
           return data
@@ -452,7 +476,7 @@ export default {
         params.status = 1
         defaultMessage = '启用成功'
       }
-      edit(params).then(res => {
+      update(params).then(res => {
         const { status, message } = res
         if (status === 1) {
           this.$message.success(defaultMessage)
@@ -482,15 +506,14 @@ export default {
       }
     },
     handleEdit (record) {
-      this.modalTitle = '编辑'
-      this.visible = true
+      this.modalTitle = '修改'
+      this.drawerVisible = true
       this.editMode = true
       this.currentRecord = record
       this.formData = record
     },
     handleAdd () {
       this.modalTitle = '新增'
-      // this.visible = true
       this.drawerVisible = true
       this.editMode = false
       this.currentRecord = {}
@@ -503,7 +526,7 @@ export default {
           const data = Object.assign({}, this.formData)
           if (this.currentRecord.id) {
             data.id = this.currentRecord.id
-            edit(data).then(res => {
+            update(data).then(res => {
               const { status, message } = res
               this.confirmLoading = false
               if (status === 1) {
@@ -544,6 +567,20 @@ export default {
     },
     drawerClose () {
       this.drawerVisible = false
+    },
+    searchIcon () {
+      this.iconModalVisible = true
+    },
+    iconOk () {
+      if (!this.selectedIcon) {
+        this.$message.warn('请选择图标')
+        return
+      }
+      this.formData.icon = this.selectedIcon
+      this.iconModalVisible = false
+    },
+    handleIconChange (icon) {
+      this.selectedIcon = icon
     }
   }
 }

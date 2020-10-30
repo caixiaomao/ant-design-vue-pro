@@ -18,9 +18,9 @@ export function listByPage (data) {
 * 修改菜单
 * @param data
 */
-export function edit (data) {
+export function update (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/edit`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/update`,
     method: 'POST',
     data: data
   })
