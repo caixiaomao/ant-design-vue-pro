@@ -10,8 +10,12 @@ const menuList = (options) => {
   let pageNum = 1
   if (paramsBody) {
     const _paramsBody = JSON.parse(paramsBody)
-    pageSize = _paramsBody.pageSize
-    pageNum = _paramsBody.pageNum
+    if (_paramsBody.pageSize) {
+      pageSize = _paramsBody.pageSize
+    }
+    if (_paramsBody.pageNum) {
+      pageNum = _paramsBody.pageNum
+    }
   }
   const list = []
   const randomDataCount = randomRange(1, pageSize)

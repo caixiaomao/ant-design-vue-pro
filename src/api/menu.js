@@ -8,7 +8,7 @@ import { API_PREFIX } from '@/config/system'
 export function listByPage (data) {
   // todo mock接口 后续需要移除
   return axios({
-    url: `/mock/api/menu/page`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/page`,
     method: 'POST',
     data: data
   })

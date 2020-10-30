@@ -285,6 +285,7 @@
 <script>
 import { STable, Ellipsis } from '@/components'
 import { listByPage, deleteById, add, edit } from '@/api/menu'
+import { formatPageParams } from '@/utils/pageUtil'
 
 export default {
   name: 'Menu',
@@ -425,16 +426,8 @@ export default {
     // 加载数据方法 必须为 Promise 对象
     loadData (params) {
       this.loading = true
-      if (params.sortOrder === 'ascend') {
-        params.sortOrder = 'asc'
-      }
-      if (params.sortOrder === 'descend') {
-        params.sortOrder = 'desc'
-      }
-      if (params.sortField === 'createTime') {
-        params.sortField = 'create_time'
-      }
-      return listByPage(Object.assign(this.queryParam, params)).then(res => {
+      const pageParams = formatPageParams(params)
+      return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
         console.log('menu page', res)
         const { status, data, message } = res
         if (status === 1) {
