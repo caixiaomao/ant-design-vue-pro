@@ -8,9 +8,10 @@
             <span class="title">Ant Design</span>
           </a>
         </div>
-        <div class="desc">
+        <!-- todo 修改登录描述 -->
+        <!--<div class="desc">
           Ant Design 是西湖区最具影响力的 Web 设计规范
-        </div>
+        </div>-->
       </div>
 
       <router-view />
@@ -22,7 +23,7 @@
           <a href="_self">条款</a>
         </div>
         <div class="copyright">
-          Copyright &copy; 2018 vueComponent
+          Copyright &copy; 2018
         </div>
       </div>
     </div>
