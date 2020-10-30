@@ -23,3 +23,9 @@ src/core/lazy_use.js
 
 ## mockjs 示例
 http://mockjs.com/examples.html
+
+## table 注意事项
+- table customRender 插槽名称不要写 title， 这是 table 标题栏的默认插槽名称
+```
+scopedSlots: { customRender: '_title' }
+```

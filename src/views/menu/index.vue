@@ -70,7 +70,10 @@
         <template slot="index" slot-scope="text, record, index">
           {{ index + 1 }}
         </template>
-        <template slot="name" slot-scope="text, record, index">
+        <template slot="_title" slot-scope="text, record, index">
+          <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
+        </template>
+        <template slot="common" slot-scope="text, record, index">
           <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="status" slot-scope="text, record, index">
@@ -400,35 +403,43 @@ export default {
           title: '序号',
           dataIndex: 'id',
           align: 'center',
+          width: 80,
           scopedSlots: { customRender: 'index' }
         },
         {
           title: '标题',
           dataIndex: 'title',
           align: 'left',
-          scopedSlots: { customRender: 'name' }
+          scopedSlots: { customRender: '_title' }
         },
         {
           title: '名称',
           dataIndex: 'name',
-          align: 'left'
+          align: 'left',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
         },
         {
           title: '状态',
           dataIndex: 'status',
           align: 'center',
           sorter: true,
+          width: 80,
           scopedSlots: { customRender: 'status' }
         },
         {
           title: '创建时间',
           dataIndex: 'createTime',
-          align: 'center'
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
         },
         {
           title: '修改时间',
           dataIndex: 'updateTime',
-          align: 'center'
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
         },
         {
           title: '操作',
