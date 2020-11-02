@@ -90,6 +90,9 @@
           <a-divider type="vertical" />
           <a-dropdown>
             <a-menu slot="overlay">
+              <a-menu-item @click="handleAddChild(record)">
+                子菜单
+              </a-menu-item>
               <a-menu-item v-if="record.status === 0" @click="updateStatus(record)">
                 启用
               </a-menu-item>
@@ -126,6 +129,15 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
         >
+          <a-form-model-item
+            ref="parentTitle"
+            label="父菜单"
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+            v-if="parentMenu.id"
+          >
+            <span>{{ parentMenu.title }}</span>
+          </a-form-model-item>
           <a-form-model-item
             ref="title"
             label="菜单标题"
@@ -355,6 +367,20 @@ export default {
         sort: 1,
         description: ''
       },
+      defaultFormData: {
+        name: '',
+        title: '',
+        path: '',
+        icon: '',
+        component: '',
+        redirect: '',
+        hidden: 0,
+        hideChildren: 0,
+        keepAlive: 0,
+        status: 1,
+        sort: 1,
+        description: ''
+      },
       rules: {
         title: [
           { required: true, message: '请输入菜单标题', trigger: 'blur' },
@@ -462,7 +488,8 @@ export default {
         }
       ],
       currentRecord: {},
-      editMode: false
+      editMode: false,
+      parentMenu: {}
     }
   },
   mounted () {},
@@ -540,6 +567,7 @@ export default {
       this.drawerVisible = true
       this.editMode = false
       this.currentRecord = {}
+      this.formData = Object.assign({}, this.defaultFormData)
     },
     handleOk (e) {
       this.confirmLoading = true
@@ -555,6 +583,7 @@ export default {
               if (status === 1) {
                 this.$message.success('修改成功')
                 this.drawerVisible = false
+                this.clearData()
                 this.refreshTable()
               } else {
                 this.$message.error(message)
@@ -564,12 +593,17 @@ export default {
               console.error(err)
             })
           } else {
+            // 新增子菜单
+            if (this.parentMenu) {
+              data.parentId = this.parentMenu.id
+            }
             add(data).then(res => {
               this.confirmLoading = false
               const { status, message } = res
               if (status === 1) {
                 this.$message.success('新增成功')
                 this.drawerVisible = false
+                this.clearData()
                 this.refreshTable()
               } else {
                 this.$message.error(message)
@@ -590,6 +624,7 @@ export default {
     },
     drawerClose () {
       this.drawerVisible = false
+      this.clearData()
     },
     searchIcon () {
       this.iconModalVisible = true
@@ -604,6 +639,19 @@ export default {
     },
     handleIconChange (icon) {
       this.selectedIcon = icon
+    },
+    handleAddChild (record) {
+      this.modalTitle = '新增子菜单'
+      this.drawerVisible = true
+      this.editMode = false
+      this.currentRecord = {}
+      this.parentMenu = record
+      this.formData = Object.assign({}, this.defaultFormData)
+    },
+    // 清除缓存的数据
+    clearData () {
+      this.currentRecord = {}
+      this.parentMenu = {}
     }
   }
 }
