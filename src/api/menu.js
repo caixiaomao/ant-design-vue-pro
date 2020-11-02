@@ -48,3 +48,15 @@ export function deleteById (id) {
     method: 'GET'
   })
 }
+
+/**
+ * 修改菜单状态
+ * @param body 参数
+ */
+export function updateStatus (data) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/updateStatus`,
+    method: 'POST',
+    data: data
+  })
+}

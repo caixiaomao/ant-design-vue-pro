@@ -76,6 +76,11 @@
         <template slot="common" slot-scope="text, record, index">
           <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
+        <template slot="icon" slot-scope="text, record, index">
+          <a-tooltip :title="text">
+            <a-icon :type="text" :style="{ fontSize: '18px', color: '#08c' }" />
+          </a-tooltip>
+        </template>
         <template slot="status" slot-scope="text, record, index">
           <a-tag v-if="text === 1" color="blue">启用</a-tag>
           <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
@@ -308,7 +313,7 @@
 
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
-import { listByPage, deleteById, add, update } from '@/api/menu'
+import { listByPage, deleteById, add, update, updateStatus } from '@/api/menu'
 import { formatPageParams } from '@/utils/pageUtil'
 
 export default {
@@ -420,6 +425,13 @@ export default {
           scopedSlots: { customRender: 'common' }
         },
         {
+          title: '图标',
+          dataIndex: 'icon',
+          align: 'center',
+          width: 100,
+          scopedSlots: { customRender: 'icon' }
+        },
+        {
           title: '状态',
           dataIndex: 'status',
           align: 'center',
@@ -487,7 +499,7 @@ export default {
         params.status = 1
         defaultMessage = '启用成功'
       }
-      update(params).then(res => {
+      updateStatus(params).then(res => {
         const { status, message } = res
         if (status === 1) {
           this.$message.success(defaultMessage)
