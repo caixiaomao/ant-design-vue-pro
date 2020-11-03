@@ -198,6 +198,7 @@
               enter-button
               @search="searchIcon"
               v-model="formData.icon"
+              @click="searchIcon"
             />
           </a-form-model-item>
           <a-form-model-item
