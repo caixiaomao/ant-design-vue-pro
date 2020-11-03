@@ -67,9 +67,6 @@
         :loading="loading"
         :showPagination="true"
       >
-        <template slot="index" slot-scope="text, record, index">
-          {{ index + 1 }}
-        </template>
         <template slot="_title" slot-scope="text, record, index">
           <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
         </template>
@@ -325,7 +322,7 @@
 
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
-import { listByPage, deleteById, add, update, updateStatus } from '@/api/menu'
+import { listByTreePage, deleteById, add, update, updateStatus } from '@/api/menu'
 import { formatPageParams } from '@/utils/pageUtil'
 
 export default {
@@ -431,13 +428,6 @@ export default {
       // 表头
       columns: [
         {
-          title: '序号',
-          dataIndex: 'id',
-          align: 'center',
-          width: 80,
-          scopedSlots: { customRender: 'index' }
-        },
-        {
           title: '标题',
           dataIndex: 'title',
           align: 'left',
@@ -501,7 +491,7 @@ export default {
     loadData (params) {
       this.loading = true
       const pageParams = formatPageParams(params)
-      return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
+      return listByTreePage(Object.assign(this.queryParam, pageParams)).then(res => {
         console.log('menu 分页列表', res)
         const { status, data, message } = res
         if (status === 1) {

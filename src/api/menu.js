@@ -15,6 +15,19 @@ export function listByPage (data) {
 }
 
 /**
+ * 菜单分页列表
+ * @param query 参数
+ */
+export function listByTreePage (data) {
+  // todo mock接口 后续需要移除
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/pageTree`,
+    method: 'POST',
+    data: data
+  })
+}
+
+/**
 * 修改菜单
 * @param data
 */
