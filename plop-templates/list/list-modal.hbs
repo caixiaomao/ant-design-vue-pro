@@ -63,23 +63,23 @@
           <a-button type="primary" size="small" @click="handleEdit(record)">编辑</a-button>
           <a-divider type="vertical" />
           <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多 <a-icon type="down" />
-            </a>
             <a-menu slot="overlay">
-              <a-menu-item>
-                <a-button type="dashed" size="small" @click="handleItem(record)">子项</a-button>
+              <a-menu-item v-if="record.status === 0" @click="updateStatus(record)">
+                启用
               </a-menu-item>
-              <a-menu-item>
-                <a-button v-if="record.status === 0" type="dashed" size="small" @click="updateStatus(record)">启用</a-button>
-                <a-button v-else-if="record.status === 1" type="dashed" size="small" @click="updateStatus(record)">禁用</a-button>
+              <a-menu-item v-if="record.status === 1" @click="updateStatus(record)">
+                禁用
               </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除？" okText="确定" cancelText="取消" @confirm="handleDelete(record)">
-                  <a-button type="danger" size="small">删除</a-button>
-                </a-popconfirm>
-              </a-menu-item>
+              <a-popconfirm title="确定删除？" okText="确定" cancelText="取消" @confirm="handleDelete(record)">
+                <a-menu-item>
+                  删除
+                </a-menu-item>
+              </a-popconfirm>
             </a-menu>
+            <a-button size="small">
+              更多
+              <a-icon type="down" />
+            </a-button>
           </a-dropdown>
         </template>
       </s-table>
