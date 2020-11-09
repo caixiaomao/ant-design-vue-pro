@@ -2089,10 +2089,10 @@ ant-design-vue@^1.6.2:
     vue-ref "^2.0.0"
     warning "^4.0.0"
 
-ant-design-vue@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.npm.taobao.org/ant-design-vue/download/ant-design-vue-1.7.0.tgz#7c3e373dcde4e68db25d9c699f5f39944976f4ce"
-  integrity sha1-fD43Pc3k5o2yXZxpn185lEl29M4=
+ant-design-vue@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.npm.taobao.org/ant-design-vue/download/ant-design-vue-1.7.2.tgz?cache=0&sync_timestamp=1604817527367&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fant-design-vue%2Fdownload%2Fant-design-vue-1.7.2.tgz#aac7ff802205711631c8698e2a0c7b4e61dfd73e"
+  integrity sha1-qsf/gCIFcRYxyGmOKgx7TmHf1z4=
   dependencies:
     "@ant-design/icons" "^2.1.1"
     "@ant-design/icons-vue" "^2.0.0"
