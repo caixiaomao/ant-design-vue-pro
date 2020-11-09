@@ -70,7 +70,7 @@ const config = {
       actions.push(
         {
           type: 'add',
-          path: `src/views/{{ properCase name }}/index.vue`,
+          path: `src/views/{{ lowerCase name }}/index.vue`,
           templateFile: 'plop-templates/list/list-drawer.hbs',
           data: {
             name: '{{ properCase name }}',
@@ -82,7 +82,7 @@ const config = {
       actions.push(
         {
           type: 'add',
-          path: `src/views/{{ properCase name }}/index.vue`,
+          path: `src/views/{{ lowerCase name }}/index.vue`,
           templateFile: 'plop-templates/list/list-modal.hbs',
           data: {
             name: '{{ properCase name }}',
