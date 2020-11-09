@@ -270,8 +270,14 @@ export const asyncRouterMap = [
           {
             path: '/sys/menu',
             name: 'Menu',
-            component: () => import('@/views/menu/index'),
+            component: () => import('@/views/system/menu/index'),
             meta: { title: '菜单管理', icon: 'menu' }
+          },
+          {
+            path: '/sys/role',
+            name: 'Role',
+            component: () => import('@/views/system/role/index'),
+            meta: { title: '角色管理', icon: 'usergroup-add' }
           }
         ]
       }
