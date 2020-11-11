@@ -5,21 +5,16 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="名称">
-                <a-input v-model="queryParam.name" placeholder="名称"/>
+              <a-form-item label="角色名称">
+                <a-input v-model="queryParam.name" placeholder="角色名称"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="标题">
-                <a-input v-model="queryParam.title" placeholder="标题"/>
+              <a-form-item label="角色编码">
+                <a-input v-model="queryParam.code" placeholder="角色编码"/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="编码">
-                  <a-input v-model="queryParam.code" placeholder="编码"/>
-                </a-form-item>
-              </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="状态">
                   <a-select v-model="queryParam.status" placeholder="请选择">
@@ -112,26 +107,26 @@
           :wrapperCol="wrapperCol"
         >
           <a-form-model-item
-            ref="title"
-            label="标题"
-            required
-            prop="title"
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-          >
-            <a-input
-              v-model="formData.title"
-              placeholder="请输入标题"
-            />
-          </a-form-model-item>
-          <a-form-model-item
             ref="name"
-            label="名称"
+            label="角色名称"
             prop="name"
           >
             <a-input
               v-model="formData.name"
-              placeholder="请输入名称"
+              placeholder="请输入角色名称"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="code"
+            label="角色编码"
+            required
+            prop="code"
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+          >
+            <a-input
+              v-model="formData.code"
+              placeholder="请输入角色编码"
             />
           </a-form-model-item>
           <a-form-model-item
@@ -198,7 +193,8 @@
 
 <script>
   import { STable, Ellipsis, IconSelector } from '@/components'
-  import { listByTreePage, deleteById, add, update, updateStatus } from '@/api/menu'
+  // eslint-disable-next-line no-unused-vars
+  import { listByPage, deleteById, add, update, updateStatus } from '@/api/role'
   import { formatPageParams } from '@/utils/pageUtil'
 
   export default {
@@ -227,7 +223,7 @@
         // 表单数据
         formData: {
           name: '',
-          title: '',
+          code: '',
           status: 1,
           sort: 1,
           description: ''
@@ -235,19 +231,19 @@
         // 默认数据
         defaultFormData: {
           name: '',
-          title: '',
+          code: '',
           status: 1,
           sort: 1,
           description: ''
         },
         rules: {
-          title: [
-            { required: true, message: '请输入标题', trigger: 'blur' },
-            { max: 30, message: '标题长度不能超过30', trigger: 'blur' }
+          code: [
+            { required: true, message: '请输入角色编码', trigger: 'blur' },
+            { max: 30, message: '角色编码长度不能超过30', trigger: 'blur' }
           ],
           name: [
-            { required: true, message: '请输入名称', trigger: 'blur' },
-            { max: 30, message: '名称长度不能超过30', trigger: 'blur' }
+            { required: true, message: '请输入角色名称', trigger: 'blur' },
+            { max: 30, message: '角色名称长度不能超过30', trigger: 'blur' }
           ],
           sort: [
             { required: true, message: '排序不能为空', trigger: 'blur' }
@@ -264,7 +260,6 @@
         // 查询参数
         queryParam: {
           name: '',
-          title: '',
           code: '',
           status: ''
         },
@@ -277,14 +272,14 @@
             scopedSlots: { customRender: 'index' }
           },
           {
-            title: '标题',
-            dataIndex: 'title',
-            align: 'left',
-            scopedSlots: { customRender: '_title' }
-          },
-          {
             title: '名称',
             dataIndex: 'name',
+            align: 'left',
+            scopedSlots: { customRender: 'common' }
+          },
+          {
+            title: '编码',
+            dataIndex: 'code',
             align: 'left',
             width: 150,
             scopedSlots: { customRender: 'common' }
@@ -332,7 +327,7 @@
       loadData (params) {
         this.loading = true
         const pageParams = formatPageParams(params)
-        return listByTreePage(Object.assign(this.queryParam, pageParams)).then(res => {
+        return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
           console.log('menu 分页列表', res)
           const { status, data, message } = res
           if (status === 1) {

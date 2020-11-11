@@ -7,7 +7,7 @@ import { API_PREFIX } from '@/config/system'
 */
 export function listByPage (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/role/page`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/page`,
     method: 'POST',
     data: data
   })
@@ -17,9 +17,9 @@ export function listByPage (data) {
 * 修改
 * @param body 参数
 */
-export function edit (data) {
+export function update (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/role/edit`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/update`,
     method: 'POST',
     data: data
   })
@@ -31,7 +31,7 @@ export function edit (data) {
 */
 export function add (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/role/add`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/add`,
     method: 'POST',
     data: data
   })
@@ -43,7 +43,19 @@ export function add (data) {
 */
 export function deleteById (id) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/role/${id}`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/${id}`,
     method: 'GET'
+  })
+}
+
+/**
+ * 更新角色状态
+ * @param data body 参数
+ */
+export function updateStatus (data) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/updateStatus`,
+    method: 'POST',
+    data: data
   })
 }
