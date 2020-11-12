@@ -1,3 +1,5 @@
+import * as _ from 'lodash'
+
 /**
  * 格式化分页参数
  * @param params
@@ -17,7 +19,7 @@ export function formatPageParams (params) {
   if (params.pageSize) {
     pageParams.pageSize = params.pageSize
   }
-  if (params.sortOrder === 'ascend') {
+  /* if (params.sortOrder === 'ascend') {
     pageParams.sortOrder = 'asc'
   }
   if (params.sortOrder === 'descend') {
@@ -25,6 +27,9 @@ export function formatPageParams (params) {
   }
   if (params.sortField === 'createTime') {
     pageParams.sortField = 'create_time'
+  } */
+  if (!_.isNull(params.sortField) && !_.isNull(params.sortOrder)) {
+    pageParams.orderBy = _.snakeCase(params.sortField) + ' ' + params.sortOrder
   }
   return pageParams
 }

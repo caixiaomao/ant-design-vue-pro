@@ -19,7 +19,7 @@ export function listByPage (data) {
 */
 export function update (data) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/api/client/edit`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/client/update`,
     method: 'POST',
     data: data
   })
