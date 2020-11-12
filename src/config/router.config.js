@@ -278,6 +278,12 @@ export const asyncRouterMap = [
             name: 'Role',
             component: () => import('@/views/system/role/index'),
             meta: { title: '角色管理', icon: 'usergroup-add' }
+          },
+          {
+            path: '/sys/client',
+            name: 'Client',
+            component: () => import('@/views/system/client/index'),
+            meta: { title: '客户端管理', icon: 'code-sandbox' }
           }
         ]
       }

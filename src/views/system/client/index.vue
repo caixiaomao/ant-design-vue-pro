@@ -5,27 +5,27 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="名称">
-                <a-input v-model="queryParam.name" placeholder="名称"/>
+              <a-form-item label="客户端名称">
+                <a-input v-model="queryParam.name" placeholder="客户端名称"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="标题">
-                <a-input v-model="queryParam.title" placeholder="标题"/>
+              <a-form-item label="客户端id">
+                <a-input v-model="queryParam.clientId" placeholder="客户端id"/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="编码">
-                  <a-input v-model="queryParam.code" placeholder="编码"/>
+                <a-form-item label="客户端secret">
+                  <a-input v-model="queryParam.clientSecret" placeholder="客户端secret"/>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
-                <a-form-item label="状态">
-                  <a-select v-model="queryParam.status" placeholder="请选择">
+                <a-form-item label="是否自动授权">
+                  <a-select v-model="queryParam.autoapprove" placeholder="请选择">
                     <a-select-option value="">全部</a-select-option>
-                    <a-select-option :value="1">启用</a-select-option>
-                    <a-select-option :value="0">禁用</a-select-option>
+                    <a-select-option :value="true">是</a-select-option>
+                    <a-select-option :value="false">否</a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
@@ -35,7 +35,7 @@
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => queryParam = {status: ''}">重置</a-button>
                 <a style="margin-left: 8px" @click="toggleAdvanced">
-                  \{{ advanced ? '收起' : '展开' }}
+                  {{ advanced ? '收起' : '展开' }}
                   <a-icon :type="advanced ? 'up' : 'down'"/>
                 </a>
               </span>
@@ -58,29 +58,20 @@
         :showPagination="true"
       >
         <template slot="index" slot-scope="text, record, index">
-          \{{ index + 1 }}
-        </template>
-        <template slot="_title" slot-scope="text, record, index">
-          <ellipsis :length="20" tooltip>\{{ text }}</ellipsis>
+          {{ index + 1 }}
         </template>
         <template slot="common" slot-scope="text, record, index">
-          <ellipsis :length="10" tooltip>\{{ text }}</ellipsis>
+          <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="status" slot-scope="text, record, index">
-          <a-tag v-if="text === 1" color="blue">启用</a-tag>
-          <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
+          <a-tag v-if="text === true" color="blue">是</a-tag>
+          <a-tag v-else-if="text === false" color="red">否</a-tag>
         </template>
         <template slot="action" slot-scope="text, record, index">
           <a-button type="primary" size="small" @click="handleEdit(record)">编辑</a-button>
           <a-divider type="vertical" />
           <a-dropdown>
             <a-menu slot="overlay">
-              <a-menu-item v-if="record.status === 0" @click="updateStatus(record)">
-                启用
-              </a-menu-item>
-              <a-menu-item v-if="record.status === 1" @click="updateStatus(record)">
-                禁用
-              </a-menu-item>
               <a-popconfirm title="确定删除？" okText="确定" cancelText="取消" @confirm="handleDelete(record)">
                 <a-menu-item>
                   删除
@@ -112,53 +103,107 @@
           :wrapperCol="wrapperCol"
         >
           <a-form-model-item
-            ref="title"
-            label="标题"
+            ref="name"
+            label="名称"
             required
-            prop="title"
+            prop="name"
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
           >
             <a-input
-              v-model="formData.title"
-              placeholder="请输入标题"
+              v-model="formData.name"
+              placeholder="请输入客户端名称"
             />
           </a-form-model-item>
           <a-form-model-item
-            ref="name"
-            label="名称"
-            prop="name"
+            ref="clientId"
+            label="客户端id"
+            prop="clientId"
           >
             <a-input
-              v-model="formData.name"
-              placeholder="请输入名称"
+              v-model="formData.clientId"
+              placeholder="请输入客户端id"
             />
           </a-form-model-item>
           <a-form-model-item
-            ref="sort"
-            label="排序"
-            prop="sort"
+            ref="clientSecret"
+            label="客户端secret"
+            prop="clientSecret"
+          >
+            <a-input
+              v-model="formData.clientSecret"
+              placeholder="请输入客户端secret"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="accessTokenValidity"
+            label="令牌有效期"
+            prop="accessTokenValidity"
           >
             <a-input-number
-              v-model="formData.sort"
+              v-model="formData.accessTokenValidity"
               :defaultValue="1"
-              :max="9999"
-              placeholder="请输入排序"
+              :max="9999999"
+              placeholder="请输入令牌有效期"
             />
           </a-form-model-item>
           <a-form-model-item
-            ref="status"
-            label="是否启用"
-            prop="status"
+            ref="refreshTokenValidity"
+            label="刷新令牌有效期"
+            prop="refreshTokenValidity"
           >
-            <a-radio-group v-model="formData.status" :default-value="1">
-              <a-radio :value="1">
+            <a-input-number
+              v-model="formData.refreshTokenValidity"
+              :defaultValue="1"
+              :max="9999999"
+              placeholder="请输入刷新令牌有效期"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="webServerRedirectUri"
+            label="重定向地址"
+            prop="webServerRedirectUri"
+          >
+            <a-input
+              v-model="formData.webServerRedirectUri"
+              placeholder="请输入重定向地址"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="autoapprove"
+            label="自动授权"
+            prop="autoapprove"
+          >
+            <a-radio-group v-model="formData.autoapprove" :default-value="1">
+              <a-radio :value="true">
                 是
               </a-radio>
-              <a-radio :value="0">
+              <a-radio :value="false">
                 否
               </a-radio>
             </a-radio-group>
+          </a-form-model-item>
+          <a-form-model-item
+            ref="resourceIds"
+            label="资源id"
+            prop="resourceIds"
+          >
+            <a-textarea
+              :rows="3"
+              v-model="formData.resourceIds"
+              placeholder="请输入资源id"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="additionalInformation"
+            label="附加信息"
+            prop="additionalInformation"
+          >
+            <a-textarea
+              :rows="3"
+              v-model="formData.additionalInformation"
+              placeholder="请输入附加信息"
+            />
           </a-form-model-item>
           <a-form-model-item
             ref="description"
@@ -198,8 +243,7 @@
 
 <script>
   import { STable, Ellipsis, IconSelector } from '@/components'
-  // eslint-disable-next-line no-unused-vars
-  import { listByPage, deleteById, add, update, updateStatus } from '@/api/{{ name }}'
+  import { listByPage, deleteById, add, update } from '@/api/client'
   import { formatPageParams } from '@/utils/pageUtil'
 
   export default {
@@ -228,36 +272,58 @@
         // 表单数据
         formData: {
           name: '',
-          title: '',
-          status: 1,
-          sort: 1,
+          clientId: '',
+          clientSecret: '',
+          scope: '',
+          resourceIds: '',
+          accessTokenValidity: 3600,
+          refreshTokenValidity: 7200,
+          authorizedGrantTypes: '',
+          webServerRedirectUri: '',
+          autoapprove: true,
+          additionalInformation: '',
           description: ''
         },
         // 默认数据
         defaultFormData: {
           name: '',
-          title: '',
-          status: 1,
-          sort: 1,
+          clientId: '',
+          clientSecret: '',
+          scope: '',
+          resourceIds: '',
+          accessTokenValidity: 3600,
+          refreshTokenValidity: 7200,
+          authorizedGrantTypes: '',
+          webServerRedirectUri: '',
+          autoapprove: true,
+          additionalInformation: '',
           description: ''
         },
         rules: {
-          title: [
-            { required: true, message: '请输入标题', trigger: 'blur' },
-            { max: 30, message: '标题长度不能超过30', trigger: 'blur' }
-          ],
           name: [
-            { required: true, message: '请输入名称', trigger: 'blur' },
-            { max: 30, message: '名称长度不能超过30', trigger: 'blur' }
+            { required: true, message: '请输入客户端名称', trigger: 'blur' },
+            { max: 50, message: '客户端名称长度不能超过50', trigger: 'blur' }
           ],
-          sort: [
-            { required: true, message: '排序不能为空', trigger: 'blur' }
+          clientId: [
+            { required: true, message: '请输入客户端id', trigger: 'blur' },
+            { max: 100, message: '客户端id长度不能超过100', trigger: 'blur' }
           ],
-          status: [
-            { required: true, message: '排序不能为空', trigger: 'blur' }
+          clientSecret: [
+            { required: true, message: '客户端secret不能为空', trigger: 'blur' },
+            { max: 100, message: '客户端secret长度不能超过200', trigger: 'blur' }
+          ],
+          webServerRedirectUri: [
+            { required: true, message: '重定向地址不能为空', trigger: 'blur' },
+            { max: 200, message: '重定向地址长度不能超过200', trigger: 'blur' }
+          ],
+          accessTokenValidity: [
+            { required: true, message: '令牌有效期不能为空', trigger: 'blur' }
+          ],
+          refreshTokenValidity: [
+            { required: true, message: '刷新令牌有效期不能为空', trigger: 'blur' }
           ],
           description: [
-            { max: 100, message: '描述长度不能超过100', trigger: 'blur' }
+            { max: 200, message: '描述长度不能超过200', trigger: 'blur' }
           ]
         },
         // 高级搜索 展开/关闭
@@ -265,9 +331,9 @@
         // 查询参数
         queryParam: {
           name: '',
-          title: '',
-          code: '',
-          status: ''
+          clientId: '',
+          clientSecret: '',
+          autoapprove: ''
         },
         // 表头
         columns: [
@@ -278,24 +344,31 @@
             scopedSlots: { customRender: 'index' }
           },
           {
-            title: '标题',
-            dataIndex: 'title',
-            align: 'left',
-            scopedSlots: { customRender: '_title' }
-          },
-          {
             title: '名称',
             dataIndex: 'name',
+            sorter: true,
+            align: 'left',
+            scopedSlots: { customRender: 'common' }
+          },
+          {
+            title: '客户端id',
+            dataIndex: 'clientId',
             align: 'left',
             width: 150,
             scopedSlots: { customRender: 'common' }
           },
           {
-            title: '状态',
-            dataIndex: 'status',
+            title: '客户端secret',
+            dataIndex: 'clientSecret',
+            align: 'left',
+            width: 150,
+            scopedSlots: { customRender: 'common' }
+          },
+          {
+            title: '自动授权',
+            dataIndex: 'autoapprove',
             align: 'center',
-            sorter: true,
-            width: 100,
+            width: 150,
             scopedSlots: { customRender: 'status' }
           },
           {
@@ -345,28 +418,6 @@
           this.loading = false
           console.error(err)
           this.$message.error(err.message || '请求数据错误')
-        })
-      },
-      updateStatus (record) {
-        const params = { id: record.id }
-        let defaultMessage = '修改状态成功'
-        if (record.status === 1) {
-          params.status = 0
-          defaultMessage = '禁用成功'
-        } else {
-          params.status = 1
-          defaultMessage = '启用成功'
-        }
-        updateStatus(params).then(res => {
-          const { status, message } = res
-          if (status === 1) {
-            this.$message.success(defaultMessage)
-            this.refreshTable()
-          } else {
-            this.$message.error(message)
-          }
-        }).catch(err => {
-          console.error(err)
         })
       },
       handleDelete (record) {
@@ -462,7 +513,5 @@
   }
 </script>
 
-{{#if style}}
   <style lang="scss" scoped>
   </style>
-{{/if}}
