@@ -88,7 +88,7 @@
 
       <a-drawer
         :title="modalTitle"
-        :width="600"
+        :width="650"
         :visible="drawerVisible"
         :maskClosable="false"
         @close="drawerClose"
@@ -127,12 +127,18 @@
           </a-form-model-item>
           <a-form-model-item
             ref="clientSecret"
-            label="客户端secret"
             prop="clientSecret"
           >
+            <span slot="label">
+              客户端secret&nbsp;
+              <a-tooltip title="由系统自动生成">
+                <a-icon type="question-circle-o" />
+              </a-tooltip>
+            </span>
             <a-input
               v-model="formData.clientSecret"
-              placeholder="请输入客户端secret"
+              placeholder="由系统自动生成"
+              :disabled="true"
             />
           </a-form-model-item>
           <a-form-model-item
@@ -157,6 +163,33 @@
               :defaultValue="1"
               :max="9999999"
               placeholder="请输入刷新令牌有效期"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="authorizedGrantTypes"
+            label="授权方式"
+            prop="authorizedGrantTypes"
+          >
+            <a-select
+              mode="multiple"
+              placeholder="请选择授权方式"
+              v-model="formData.authorizedGrantTypes"
+            >
+              <a-select-option key="password">用户密码</a-select-option>
+              <a-select-option key="refresh_token">刷新令牌</a-select-option>
+              <a-select-option key="authorization_code">授权码</a-select-option>
+              <a-select-option key="client_credentials">客户端认证</a-select-option>
+              <a-select-option key="implicit">简化模式</a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <a-form-model-item
+            ref="scope"
+            label="权限范围"
+            prop="scope"
+          >
+            <a-input
+              v-model="formData.scope"
+              placeholder="请输入权限范围"
             />
           </a-form-model-item>
           <a-form-model-item
@@ -242,9 +275,10 @@
   import { STable, Ellipsis, IconSelector } from '@/components'
   import { listByPage, deleteById, add, update } from '@/api/client'
   import { formatPageParams } from '@/utils/pageUtil'
+  import * as _ from 'lodash'
 
   export default {
-    name: 'Menu',
+    name: 'Client',
     components: {
       STable,
       Ellipsis,
@@ -275,7 +309,7 @@
           resourceIds: '',
           accessTokenValidity: 3600,
           refreshTokenValidity: 7200,
-          authorizedGrantTypes: '',
+          authorizedGrantTypes: [],
           webServerRedirectUri: '',
           autoapprove: true,
           additionalInformation: '',
@@ -290,7 +324,7 @@
           resourceIds: '',
           accessTokenValidity: 3600,
           refreshTokenValidity: 7200,
-          authorizedGrantTypes: '',
+          authorizedGrantTypes: ['password', 'refresh_token'],
           webServerRedirectUri: '',
           autoapprove: true,
           additionalInformation: '',
@@ -305,9 +339,8 @@
             { required: true, message: '请输入客户端id', trigger: 'blur' },
             { max: 100, message: '客户端id长度不能超过100', trigger: 'blur' }
           ],
-          clientSecret: [
-            { required: true, message: '客户端secret不能为空', trigger: 'blur' },
-            { max: 100, message: '客户端secret长度不能超过200', trigger: 'blur' }
+          authorizedGrantTypes: [
+            { required: true, message: '授权方式不能为空', trigger: 'blur' }
           ],
           webServerRedirectUri: [
             { required: true, message: '重定向地址不能为空', trigger: 'blur' },
@@ -435,6 +468,11 @@
         }
       },
       handleEdit (record) {
+        if (_.isNil(record.authorizedGrantTypes)) {
+          record.authorizedGrantTypes = []
+        } else {
+          record.authorizedGrantTypes = record.authorizedGrantTypes.split(',')
+        }
         this.modalTitle = '修改'
         this.drawerVisible = true
         this.editMode = true
@@ -446,14 +484,15 @@
         this.drawerVisible = true
         this.editMode = false
         this.currentRecord = {}
-        this.formData = Object.assign({}, this.defaultFormData)
+        this.formData = _.cloneDeep(this.defaultFormData)
       },
       handleOk (e) {
         this.confirmLoading = true
         this.$refs.form.validate((valid) => {
           if (valid) {
             // 修改
-            const data = Object.assign({}, this.formData)
+            const data = _.cloneDeep(this.formData)
+            data.authorizedGrantTypes = _.join(data.authorizedGrantTypes, ',')
             if (this.currentRecord.id) {
               data.id = this.currentRecord.id
               update(data).then(res => {

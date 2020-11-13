@@ -43,7 +43,7 @@ export function add (data) {
 */
 export function deleteById (id) {
   return axios({
-    url: `${API_PREFIX.UPMS_SERVICE}/api/client/${id}`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/client/delete/${id}`,
     method: 'GET'
   })
 }

@@ -198,7 +198,7 @@
   import { formatPageParams } from '@/utils/pageUtil'
 
   export default {
-    name: 'Menu',
+    name: 'Role',
     components: {
       STable,
       Ellipsis,
