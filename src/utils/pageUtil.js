@@ -19,6 +19,12 @@ export function formatPageParams (params) {
   if (params.pageSize) {
     pageParams.pageSize = params.pageSize
   }
+  if (params.sortOrder === 'ascend') {
+    pageParams.sortOrder = 'asc'
+  }
+  if (params.sortOrder === 'descend') {
+    pageParams.sortOrder = 'desc'
+  }
   /* if (params.sortOrder === 'ascend') {
     pageParams.sortOrder = 'asc'
   }
@@ -28,8 +34,8 @@ export function formatPageParams (params) {
   if (params.sortField === 'createTime') {
     pageParams.sortField = 'create_time'
   } */
-  if (!_.isNull(params.sortField) && !_.isNull(params.sortOrder)) {
-    pageParams.orderBy = _.snakeCase(params.sortField) + ' ' + params.sortOrder
+  if (!_.isNil(params.sortField) && !_.isNil(params.sortOrder)) {
+    pageParams.orderBy = _.snakeCase(params.sortField) + ' ' + pageParams.sortOrder
   }
   return pageParams
 }

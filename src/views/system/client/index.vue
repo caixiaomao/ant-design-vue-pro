@@ -174,14 +174,11 @@
             label="自动授权"
             prop="autoapprove"
           >
-            <a-radio-group v-model="formData.autoapprove" :default-value="1">
-              <a-radio :value="true">
-                是
-              </a-radio>
-              <a-radio :value="false">
-                否
-              </a-radio>
-            </a-radio-group>
+            <a-switch
+              checked-children="是"
+              un-checked-children="否"
+              v-model="formData.autoapprove"
+            />
           </a-form-model-item>
           <a-form-model-item
             ref="resourceIds"
