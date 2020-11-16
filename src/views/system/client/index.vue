@@ -72,11 +72,9 @@
           <a-divider type="vertical" />
           <a-dropdown>
             <a-menu slot="overlay">
-              <a-popconfirm title="确定删除？" okText="确定" cancelText="取消" @confirm="handleDelete(record)">
-                <a-menu-item>
-                  删除
-                </a-menu-item>
-              </a-popconfirm>
+              <a-menu-item @click="handleDelete(record)">
+                删除
+              </a-menu-item>
             </a-menu>
             <a-button size="small">
               更多
@@ -451,21 +449,33 @@
         })
       },
       handleDelete (record) {
-        if (record.id) {
-          deleteById(record.id).then(res => {
-            const { status, message } = res
-            if (status === 1) {
-              this.$message.success('删除成功')
-              this.refreshTable()
+        const that = this
+        this.$confirm({
+          title: '确定删除？',
+          content: '删除后无法恢复，请谨慎操作！',
+          okText: '确定',
+          okType: 'danger',
+          cancelText: '取消',
+          onOk () {
+            if (record.id) {
+              deleteById(record.id).then(res => {
+                const { status, message } = res
+                if (status === 1) {
+                  that.$message.success('删除成功')
+                  that.refreshTable()
+                } else {
+                  that.$message.error(message)
+                }
+              }).catch(err => {
+                console.error(err)
+              })
             } else {
-              this.$message.error(message)
+              that.$message.error('id为空')
             }
-          }).catch(err => {
-            console.error(err)
-          })
-        } else {
-          this.$message.error('id为空')
-        }
+          },
+          onCancel () {
+          }
+        })
       },
       handleEdit (record) {
         if (_.isNil(record.authorizedGrantTypes)) {

@@ -80,6 +80,7 @@ const orgTree = () => {
   }])
 }
 
+// eslint-disable-next-line no-unused-vars
 const role = () => {
   return builder({
     'data': [{
@@ -968,6 +969,7 @@ const permissions = () => {
 }
 
 Mock.mock(/\/org\/tree/, 'get', orgTree)
-Mock.mock(/\/role/, 'get', role)
+// todo 屏蔽角色 mock
+// Mock.mock(/\/role/, 'get', role)
 Mock.mock(/\/permission\/no-pager/, 'get', permissionNoPager)
 Mock.mock(/\/permission/, 'get', permissions)
