@@ -1,4 +1,5 @@
 import { axios } from '@/utils/request'
+import { API_PREFIX } from '@/config/system'
 
 /**
 * 分页列表
@@ -6,7 +7,7 @@ import { axios } from '@/utils/request'
 */
 export function listByPage (data, params) {
   return axios({
-    url: `/{{ name }}/page`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/dict/page`,
     method: 'POST',
     data: data,
     params: params
@@ -19,7 +20,7 @@ export function listByPage (data, params) {
 */
 export function edit (data) {
   return axios({
-    url: `/{{ name }}/edit`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/dict/edit`,
     method: 'POST',
     data: data
   })
@@ -31,7 +32,7 @@ export function edit (data) {
 */
 export function add (data) {
   return axios({
-    url: `/{{ name }}/add`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/dict/add`,
     method: 'POST',
     data: data
   })
@@ -43,18 +44,18 @@ export function add (data) {
 */
 export function deleteById (id) {
   return axios({
-    url: `/{{ name }}/delete/${id}`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/dict/delete/${id}`,
     method: 'GET'
   })
 }
 
 /**
-* 修改状态
-* @param data body参数
-*/
+ * 修改状态
+ * @param data body参数
+ */
 export function updateStatus (data) {
   return axios({
-    url: `/{{ name }}/updateStatus`,
+    url: `${API_PREFIX.UPMS_SERVICE}/api/dict/updateStatus`,
     method: 'POST',
     data: data
   })

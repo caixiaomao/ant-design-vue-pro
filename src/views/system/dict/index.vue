@@ -35,7 +35,7 @@
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => queryParam = {status: ''}">重置</a-button>
                 <a style="margin-left: 8px" @click="toggleAdvanced">
-                  \{{ advanced ? '收起' : '展开' }}
+                  {{ advanced ? '收起' : '展开' }}
                   <a-icon :type="advanced ? 'up' : 'down'"/>
                 </a>
               </span>
@@ -58,13 +58,13 @@
         :showPagination="true"
       >
         <template slot="index" slot-scope="text, record, index">
-          \{{ index + 1 }}
+          {{ index + 1 }}
         </template>
         <template slot="_title" slot-scope="text, record, index">
-          <ellipsis :length="20" tooltip>\{{ text }}</ellipsis>
+          <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="common" slot-scope="text, record, index">
-          <ellipsis :length="10" tooltip>\{{ text }}</ellipsis>
+          <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="status" slot-scope="text, record, index">
           <a-tag v-if="text === 1" color="blue">启用</a-tag>
@@ -197,12 +197,12 @@
 <script>
   import { STable, Ellipsis, IconSelector } from '@/components'
   // eslint-disable-next-line no-unused-vars
-  import { listByPage, deleteById, add, edit, updateStatus } from '@/api/{{ name }}'
+  import { listByPage, deleteById, add, edit, updateStatus } from '@/api/dict'
   import { formatPageParams } from '@/utils/pageUtil'
   import * as _ from 'lodash'
 
   export default {
-    name: '{{ name }}',
+    name: 'Dict',
     components: {
       STable,
       Ellipsis,
@@ -473,7 +473,5 @@
   }
 </script>
 
-{{#if style}}
   <style lang="scss" scoped>
   </style>
-{{/if}}

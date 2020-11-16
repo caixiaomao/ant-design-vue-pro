@@ -1,5 +1,3 @@
-import isempty from 'lodash.isempty'
-
 const config = {
   description: '列表模块',
   prompts: [
@@ -8,7 +6,7 @@ const config = {
       name: 'name',
       message: '请输入模块名称：',
       validate (value) {
-        if (isempty(value)) {
+        if (isEmpty(value)) {
           return '模块名称不能为空'
         }
         return true
@@ -97,8 +95,13 @@ const config = {
   }
 }
 
+/**
+ * 是否为空
+ * @param value
+ * @returns {boolean}
+ */
 const isEmpty = function (value) {
-  if (value === '' || value === undefined || value === null || value.trim() === '') {
+  if (value === undefined || value === null || value.trim() === '' || value === '') {
     return true
   }
   return false

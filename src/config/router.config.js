@@ -284,6 +284,12 @@ export const asyncRouterMap = [
             name: 'Client',
             component: () => import('@/views/system/client/index'),
             meta: { title: '客户端管理', icon: 'code-sandbox' }
+          },
+          {
+            path: '/sys/dict',
+            name: 'Dict',
+            component: () => import('@/views/system/dict/index'),
+            meta: { title: '字典管理', icon: 'font-colors' }
           }
         ]
       }
