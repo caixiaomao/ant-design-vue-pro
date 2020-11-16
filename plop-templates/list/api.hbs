@@ -6,7 +6,7 @@ import { axios } from '@/utils/request'
 */
 export function listByPage (data, params) {
   return axios({
-    url: `/{{ name }}/listByPage`,
+    url: `/{{ name }}/page`,
     method: 'POST',
     data: data,
     params: params

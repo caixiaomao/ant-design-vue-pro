@@ -201,9 +201,10 @@
   // eslint-disable-next-line no-unused-vars
   import { listByPage, deleteById, add, update, updateStatus } from '@/api/{{ name }}'
   import { formatPageParams } from '@/utils/pageUtil'
+  import * as _ from 'lodash'
 
   export default {
-    name: 'Menu',
+    name: '{{ name }}',
     components: {
       STable,
       Ellipsis,
@@ -398,14 +399,14 @@
         this.drawerVisible = true
         this.editMode = false
         this.currentRecord = {}
-        this.formData = Object.assign({}, this.defaultFormData)
+        this.formData = _.cloneDeep(this.defaultFormData)
       },
       handleOk (e) {
         this.confirmLoading = true
         this.$refs.form.validate((valid) => {
           if (valid) {
             // 修改
-            const data = Object.assign({}, this.formData)
+            const data = _.cloneDeep(this.formData)
             if (this.currentRecord.id) {
               data.id = this.currentRecord.id
               update(data).then(res => {
