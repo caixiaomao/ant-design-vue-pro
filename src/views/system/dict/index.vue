@@ -279,8 +279,8 @@
             zIndex: 1,
           }"
         >
-          <a-button type="primary" @click="itemDrawerClose">
-            确定
+          <a-button @click="itemDrawerClose">
+            关闭
           </a-button>
         </div>
 
