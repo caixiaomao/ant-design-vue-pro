@@ -529,7 +529,6 @@
             title: '编码',
             dataIndex: 'code',
             width: 100,
-            sorter: true,
             align: 'center'
           },
           {
@@ -538,6 +537,13 @@
             align: 'center',
             width: 60,
             scopedSlots: { customRender: 'status' }
+          },
+          {
+            title: '排序',
+            dataIndex: 'sort',
+            width: 80,
+            sorter: true,
+            align: 'center'
           },
           {
             title: '创建时间',
