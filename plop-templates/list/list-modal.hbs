@@ -55,6 +55,9 @@
         <template slot="index" slot-scope="text, record, index">
           \{{ index + 1 }}
         </template>
+        <template slot="common" slot-scope="text, record, index">
+          <ellipsis :length="10" tooltip>\{{ text }}</ellipsis>
+        </template>
         <template slot="status" slot-scope="text, record">
           <a-tag v-if="text === 1" color="blue">启用</a-tag>
           <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
@@ -140,14 +143,15 @@
 </template>
 
 <script>
-  import { STable } from '@/components'
+  import { STable, Ellipsis } from '@/components'
   // todo 需要删除
   // eslint-disable-next-line no-unused-vars
   import { listByPage, deleteById, add, update } from '@/api/{{ name }}'
   export default {
   name: '{{ name }}',
   components: {
-    STable
+    STable,
+    Ellipsis
   },
   props: {},
   data () {
@@ -178,6 +182,7 @@
         {
           title: '序号',
           dataIndex: 'id',
+          width: 100,
           align: 'center',
           scopedSlots: { customRender: 'index' }
         },
@@ -192,29 +197,32 @@
           title: '编码',
           dataIndex: 'code',
           align: 'center',
-          sorter: true,
-          ellipsis: true
+          sorter: true
         },
         {
           title: '状态',
           dataIndex: 'status',
           align: 'center',
-          sorter: true,
+          width: 100,
           scopedSlots: { customRender: 'status' }
         },
         {
           title: '创建时间',
           dataIndex: 'createTime',
-          align: 'center'
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
         },
         {
           title: '修改时间',
           dataIndex: 'updateTime',
-          align: 'center'
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
         },
         {
           title: '操作',
-          width: '150px',
+          width: 200,
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
         }
