@@ -21,6 +21,24 @@ import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less' // global style
 
+// sentry 监控
+import * as Sentry from '@sentry/browser'
+import { Vue as VueIntegration } from '@sentry/integrations'
+import { Integrations } from '@sentry/tracing'
+Sentry.init({
+  dsn: 'https://6f45b57874d34ffa884e378278609ef8@o477711.ingest.sentry.io/5519159',
+  integrations: [
+    new VueIntegration({
+      Vue,
+      tracing: true
+    }),
+    new Integrations.BrowserTracing()
+  ],
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0
+})
+
 Vue.config.productionTip = false
 
 // mount axios to `Vue.$http` and `this.$http`
