@@ -261,13 +261,13 @@
             title: '编码',
             dataIndex: 'code',
             width: 200,
+            sorter: true,
             align: 'center'
           },
           {
             title: '状态',
             dataIndex: 'status',
             align: 'center',
-            sorter: true,
             width: 100,
             scopedSlots: { customRender: 'status' }
           },
@@ -376,7 +376,7 @@
         this.drawerVisible = true
         this.editMode = true
         this.currentRecord = record
-        this.formData = record
+        this.formData = _.cloneDeep(record)
       },
       handleAdd () {
         this.modalTitle = '新增'

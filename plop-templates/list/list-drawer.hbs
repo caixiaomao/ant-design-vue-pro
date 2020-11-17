@@ -403,7 +403,7 @@
         this.drawerVisible = true
         this.editMode = true
         this.currentRecord = record
-        this.formData = record
+        this.formData = _.cloneDeep(record)
       },
       handleAdd () {
         this.modalTitle = '新增'
