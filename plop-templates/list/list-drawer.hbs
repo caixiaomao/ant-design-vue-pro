@@ -195,287 +195,285 @@
   </page-header-wrapper>
 </template>
 
-<script>
-  import { STable, Ellipsis, IconSelector } from '@/components'
-  // eslint-disable-next-line no-unused-vars
-  import { listByPage, deleteById, add, edit, updateStatus } from '@/api/{{ name }}'
-  import { formatPageParams } from '@/utils/pageUtil'
-  import * as _ from 'lodash'
-
-  export default {
-    name: '{{ name }}',
-    components: {
-      STable,
-      Ellipsis,
-      IconSelector
-    },
-    props: {},
-    data () {
-      return {
-        loading: false,
-        drawerVisible: false,
-        confirmLoading: false,
-        modalTitle: '',
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 }
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 16 }
-        },
-        form: this.$form.createForm(this),
-        // 表单数据
-        formData: {
-          name: '',
-          title: '',
-          status: 1,
-          sort: 1,
-          description: ''
-        },
-        // 默认数据
-        defaultFormData: {
-          name: '',
-          title: '',
-          status: 1,
-          sort: 1,
-          description: ''
-        },
-        rules: {
-          title: [
-            { required: true, message: '请输入标题', trigger: 'blur' },
-            { max: 30, message: '标题长度不能超过30', trigger: 'blur' }
-          ],
-          name: [
-            { required: true, message: '请输入名称', trigger: 'blur' },
-            { max: 30, message: '名称长度不能超过30', trigger: 'blur' }
-          ],
-          sort: [
-            { required: true, message: '排序不能为空', trigger: 'blur' }
-          ],
-          status: [
-            { required: true, message: '排序不能为空', trigger: 'blur' }
-          ],
-          description: [
-            { max: 100, message: '描述长度不能超过100', trigger: 'blur' }
-          ]
-        },
-        // 高级搜索 展开/关闭
-        advanced: false,
-        // 查询参数
-        queryParam: {
-          name: '',
-          title: '',
-          code: '',
-          status: ''
-        },
-        // 表头
-        columns: [
-          {
-            title: '序号',
-            dataIndex: 'id',
-            align: 'center',
-            width: 100,
-            scopedSlots: { customRender: 'index' }
-          },
-          {
-            title: '标题',
-            dataIndex: 'title',
-            align: 'left',
-            scopedSlots: { customRender: '_title' }
-          },
-          {
-            title: '名称',
-            dataIndex: 'name',
-            align: 'left',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '状态',
-            dataIndex: 'status',
-            align: 'center',
-            sorter: true,
-            width: 100,
-            scopedSlots: { customRender: 'status' }
-          },
-          {
-            title: '创建时间',
-            dataIndex: 'createTime',
-            align: 'center',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '修改时间',
-            dataIndex: 'updateTime',
-            align: 'center',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '操作',
-            width: 200,
-            dataIndex: 'action',
-            align: 'center',
-            scopedSlots: { customRender: 'action' }
-          }
+<script>import { STable, Ellipsis, IconSelector } from '@/components'
+// eslint-disable-next-line no-unused-vars
+import { listByPage, deleteById, add, edit, updateStatus } from '@/api/{{ name }}'
+import { formatPageParams } from '@/utils/pageUtil'
+import * as _ from 'lodash'
+export default {
+  name: '{{ name }}',
+  components: {
+    STable,
+    Ellipsis,
+    IconSelector
+  },
+  props: {},
+  data () {
+    return {
+      loading: false,
+      drawerVisible: false,
+      confirmLoading: false,
+      modalTitle: '',
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      },
+      form: this.$form.createForm(this),
+      // 表单数据
+      formData: {
+        name: '',
+        title: '',
+        status: 1,
+        sort: 1,
+        description: ''
+      },
+      // 默认数据
+      defaultFormData: {
+        name: '',
+        title: '',
+        status: 1,
+        sort: 1,
+        description: ''
+      },
+      rules: {
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
+          { max: 30, message: '标题长度不能超过30', trigger: 'blur' }
         ],
-        currentRecord: {},
-        editMode: false
-      }
-    },
-    mounted () {},
-    methods: {
-      toggleAdvanced () {
-        this.advanced = !this.advanced
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' },
+          { max: 30, message: '名称长度不能超过30', trigger: 'blur' }
+        ],
+        sort: [
+          { required: true, message: '排序不能为空', trigger: 'blur' }
+        ],
+        status: [
+          { required: true, message: '排序不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { max: 100, message: '描述长度不能超过100', trigger: 'blur' }
+        ]
       },
-      // 加载数据方法 必须为 Promise 对象
-      loadData (params) {
-        this.loading = true
-        const pageParams = formatPageParams(params)
-        return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
-          const { status, data, message } = res
-          if (status === 1) {
-            return data
-          } else {
-            this.$message.error(message)
-          }
-          this.loading = false
-        }).catch(err => {
-          this.loading = false
-          console.error(err)
-          this.$message.error(err.message || '请求数据错误')
-        })
+      // 高级搜索 展开/关闭
+      advanced: false,
+      // 查询参数
+      queryParam: {
+        name: '',
+        title: '',
+        code: '',
+        status: ''
       },
-      updateStatus (record) {
-        const params = { id: record.id }
-        let defaultMessage = '修改状态成功'
-        if (record.status === 1) {
-          params.status = 0
-          defaultMessage = '禁用成功'
-        } else {
-          params.status = 1
-          defaultMessage = '启用成功'
+      // 表头
+      columns: [
+        {
+          title: '序号',
+          dataIndex: 'id',
+          align: 'center',
+          width: 100,
+          scopedSlots: { customRender: 'index' }
+        },
+        {
+          title: '标题',
+          dataIndex: 'title',
+          align: 'left',
+          scopedSlots: { customRender: '_title' }
+        },
+        {
+          title: '名称',
+          dataIndex: 'name',
+          align: 'left',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          align: 'center',
+          sorter: true,
+          width: 100,
+          scopedSlots: { customRender: 'status' }
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '修改时间',
+          dataIndex: 'updateTime',
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '操作',
+          width: 200,
+          dataIndex: 'action',
+          align: 'center',
+          scopedSlots: { customRender: 'action' }
         }
-        updateStatus(params).then(res => {
-          const { status, message } = res
-          if (status === 1) {
-            this.$message.success(defaultMessage)
-            this.refreshTable()
-          } else {
-            this.$message.error(message)
-          }
-        }).catch(err => {
-          console.error(err)
-        })
-      },
-      handleDelete (record) {
-        const that = this
-        this.$confirm({
-          title: '确定删除？',
-          content: '删除后无法恢复，请谨慎操作！',
-          okText: '确定',
-          okType: 'danger',
-          cancelText: '取消',
-          onOk () {
-            if (record.id) {
-              deleteById(record.id).then(res => {
-                const { status, message } = res
-                if (status === 1) {
-                  that.$message.success('删除成功')
-                  that.refreshTable()
-                } else {
-                  that.$message.error(message)
-                }
-              }).catch(err => {
-                console.error(err)
-              })
-            } else {
-              that.$message.error('id为空')
-            }
-          },
-          onCancel () {
-          }
-        })
-      },
-      handleEdit (record) {
-        this.modalTitle = '修改'
-        this.drawerVisible = true
-        this.editMode = true
-        this.currentRecord = record
-        this.formData = _.cloneDeep(record)
-      },
-      handleAdd () {
-        this.modalTitle = '新增'
-        this.drawerVisible = true
-        this.editMode = false
-        this.currentRecord = {}
-        this.formData = _.cloneDeep(this.defaultFormData)
-      },
-      handleOk (e) {
-        this.confirmLoading = true
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            // 修改
-            const data = _.cloneDeep(this.formData)
-            if (this.currentRecord.id) {
-              data.id = this.currentRecord.id
-              edit(data).then(res => {
-                const { status, message } = res
-                this.confirmLoading = false
-                if (status === 1) {
-                  this.$message.success('修改成功')
-                  this.drawerVisible = false
-                  this.clearData()
-                  this.refreshTable()
-                } else {
-                  this.$message.error(message)
-                }
-              }).catch(err => {
-                this.confirmLoading = false
-                console.error(err)
-              })
-            } else {
-              add(data).then(res => {
-                this.confirmLoading = false
-                const { status, message } = res
-                if (status === 1) {
-                  this.$message.success('新增成功')
-                  this.drawerVisible = false
-                  this.clearData()
-                  this.refreshTable()
-                } else {
-                  this.$message.error(message)
-                }
-              }).catch(err => {
-                this.confirmLoading = false
-                console.error(err)
-              })
-            }
-          } else {
-            this.$message.warn('数据填写有误，请检查')
-            this.confirmLoading = false
-          }
-        })
-      },
-      refreshTable () {
-        this.$refs.table.refresh()
-      },
-      drawerClose () {
-        this.drawerVisible = false
-        this.clearData()
-      },
-      // 清除缓存的数据
-      clearData () {
-        this.currentRecord = {}
-        this.parentMenu = {}
+      ],
+      currentRecord: {},
+      editMode: false
+    }
+  },
+  mounted () {},
+  methods: {
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    // 加载数据方法 必须为 Promise 对象
+    loadData (params) {
+      this.loading = true
+      const pageParams = formatPageParams(params)
+      return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
+        const { status, data, message } = res
+        if (status === 1) {
+          return data
+        } else {
+          this.$message.error(message)
+        }
+        this.loading = false
+      }).catch(err => {
+        this.loading = false
+        console.error(err)
+        this.$message.error(err.message || '请求数据错误')
+      })
+    },
+    updateStatus (record) {
+      const params = { id: record.id }
+      let defaultMessage = '修改状态成功'
+      if (record.status === 1) {
+        params.status = 0
+        defaultMessage = '禁用成功'
+      } else {
+        params.status = 1
+        defaultMessage = '启用成功'
       }
+      updateStatus(params).then(res => {
+        const { status, message } = res
+        if (status === 1) {
+          this.$message.success(defaultMessage)
+          this.refreshTable()
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        console.error(err)
+      })
+    },
+    handleDelete (record) {
+      const that = this
+      this.$confirm({
+        title: '确定删除？',
+        content: '删除后无法恢复，请谨慎操作！',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          if (record.id) {
+            deleteById(record.id).then(res => {
+              const { status, message } = res
+              if (status === 1) {
+                that.$message.success('删除成功')
+                that.refreshTable()
+              } else {
+                that.$message.error(message)
+              }
+            }).catch(err => {
+              console.error(err)
+            })
+          } else {
+            that.$message.error('id为空')
+          }
+        },
+        onCancel () {
+        }
+      })
+    },
+    handleEdit (record) {
+      this.modalTitle = '修改'
+      this.drawerVisible = true
+      this.editMode = true
+      this.currentRecord = record
+      this.formData = _.cloneDeep(record)
+    },
+    handleAdd () {
+      this.modalTitle = '新增'
+      this.drawerVisible = true
+      this.editMode = false
+      this.currentRecord = {}
+      this.formData = _.cloneDeep(this.defaultFormData)
+    },
+    handleOk (e) {
+      this.confirmLoading = true
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          // 修改
+          const data = _.cloneDeep(this.formData)
+          if (this.currentRecord.id) {
+            data.id = this.currentRecord.id
+            edit(data).then(res => {
+              const { status, message } = res
+              this.confirmLoading = false
+              if (status === 1) {
+                this.$message.success('修改成功')
+                this.drawerVisible = false
+                this.clearData()
+                this.refreshTable()
+              } else {
+                this.$message.error(message)
+              }
+            }).catch(err => {
+              this.confirmLoading = false
+              console.error(err)
+            })
+          } else {
+            add(data).then(res => {
+              this.confirmLoading = false
+              const { status, message } = res
+              if (status === 1) {
+                this.$message.success('新增成功')
+                this.drawerVisible = false
+                this.clearData()
+                this.refreshTable()
+              } else {
+                this.$message.error(message)
+              }
+            }).catch(err => {
+              this.confirmLoading = false
+              console.error(err)
+            })
+          }
+        } else {
+          this.$message.warn('数据填写有误，请检查')
+          this.confirmLoading = false
+        }
+      })
+    },
+    refreshTable () {
+      this.$refs.table.refresh()
+    },
+    drawerClose () {
+      this.drawerVisible = false
+      this.clearData()
+    },
+    // 清除缓存的数据
+    clearData () {
+      this.currentRecord = {}
+      this.parentMenu = {}
     }
   }
+}
 </script>
 
 {{#if style}}
-  <style lang="scss" scoped>
-  </style>
+<style lang="scss" scoped>
+</style>
 {{/if}}
