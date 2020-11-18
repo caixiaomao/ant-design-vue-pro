@@ -73,3 +73,26 @@ export function updateStatus (data) {
     data: data
   })
 }
+
+/**
+ * 菜单树列表
+ * @param body 参数
+ */
+export function listTree (data) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/listTree`,
+    method: 'POST',
+    data: data
+  })
+}
+
+/**
+ * 根据角色id查询角色菜单
+ * @param roleId 角色id
+ */
+export function listMenusByRoleId (roleId) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/listMenusByRoleId/${roleId}`,
+    method: 'GET'
+  })
+}

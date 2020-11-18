@@ -475,15 +475,17 @@ export default {
       this.parentMenu = {}
     },
     editMenus (record) {
+      debugger
       this.roleId = record.id
       this.showRoleMenu = true
     },
     clearShowRoleMenu () {
       this.showRoleMenu = false
+      this.roleId = 0
     }
   }
 }
 </script>
 
-  <style lang="scss" scoped>
-  </style>
+<style lang="scss" scoped>
+</style>

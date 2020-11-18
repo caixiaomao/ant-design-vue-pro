@@ -44,6 +44,8 @@ import {
   Statistic,
   Descriptions,
   FormModel,
+  Tree,
+  TreeSelect,
   message,
   notification
 } from 'ant-design-vue'
@@ -99,6 +101,8 @@ Vue.use(Result)
 Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(FormModel)
+Vue.use(Tree)
+Vue.use(TreeSelect)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
