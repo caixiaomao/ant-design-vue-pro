@@ -495,6 +495,8 @@ export default {
     },
     refreshItemTable () {
       this.$refs.itemTable.refresh()
+    },
+    clearData () {
     }
   },
   watch: {

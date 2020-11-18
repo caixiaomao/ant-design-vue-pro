@@ -460,7 +460,7 @@ export default {
       this.dictId = record.id
     },
     destroyClose () {
-      this.showDictItem = !this.showDictItem
+      this.showDictItem = false
     }
   }
 }
