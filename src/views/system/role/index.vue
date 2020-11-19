@@ -196,6 +196,7 @@
         :confirm-loading="confirmLoading"
         :destroyOnClose="true"
         :maskClosable="false"
+        @afterClose="afterClose"
         @ok="handleRoleMenuOk"
         @cancel="handleCancle"
       >
@@ -207,7 +208,7 @@
           :auto-expand-parent="true"
           :selected-keys="selectedKeys"
           :tree-data="treeData"
-          :afterClose="afterClose"
+          @check="onCheck"
         />
       </a-modal>
     </a-card>
@@ -345,7 +346,8 @@ export default {
       visible: false,
       selectedKeys: [],
       checkedKeys: [],
-      treeData: []
+      treeData: [],
+      checkedNodes: []
     }
   },
   mounted () {},
@@ -358,7 +360,6 @@ export default {
       this.loading = true
       const pageParams = formatPageParams(params)
       return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
-        console.log('menu 分页列表', res)
         const { status, data, message } = res
         if (status === 1) {
           return data
@@ -535,15 +536,20 @@ export default {
       })
     },
     handleRoleMenuOk (e) {
-      if (_.isNil(this.checkedKeys)) {
+      if (_.isNil(this.checkedNodes) || this.checkedNodes.length <= 0) {
         return
       }
       const data = { roleId: this.roleId, menus: [] }
       const menus = []
-      this.checkedKeys.forEach(item => {
-        menus.push({ menuId: item })
+      this.checkedNodes.forEach(item => {
+        menus.push({ menuId: item.data.props.id })
+        // 上级菜单也保存，跳过根菜单
+        if (item.data.props.parentId !== 0) {
+          menus.push({ menuId: item.data.props.parentId })
+        }
       })
-      data.menus = menus
+      debugger
+      data.menus = _.uniqBy(menus, 'menuId')
       addMenus(data).then(res => {
         const { status, message } = res
         if (status === 1) {
@@ -564,6 +570,10 @@ export default {
       this.treeData = []
       this.checkedKeys = []
       this.showRoleMenu = []
+    },
+    onCheck (checkedKeys, e) {
+      console.log(e)
+      this.checkedNodes = e.checkedNodes
     }
   }
 }
