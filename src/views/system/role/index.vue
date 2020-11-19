@@ -190,7 +190,26 @@
         </div>
       </a-drawer>
       <!-- 角色菜单 -->
-      <role-menu :show-role-menu="showRoleMenu" :role-id="roleId" @clearShowRoleMenu="clearShowRoleMenu"/>
+      <a-modal
+        title="角色菜单"
+        :visible="visible"
+        :confirm-loading="confirmLoading"
+        :destroyOnClose="true"
+        :maskClosable="false"
+        @ok="handleRoleMenuOk"
+        @cancel="handleCancle"
+      >
+        <a-tree
+          v-model="checkedKeys"
+          :maskClosable="false"
+          checkable
+          :replaceFields="{children:'children', title:'title', key:'id'}"
+          :auto-expand-parent="true"
+          :selected-keys="selectedKeys"
+          :tree-data="treeData"
+          :afterClose="afterClose"
+        />
+      </a-modal>
     </a-card>
   </page-header-wrapper>
 </template>
@@ -198,22 +217,21 @@
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
 // eslint-disable-next-line no-unused-vars
-import { listByPage, deleteById, add, update, updateStatus } from '@/api/role'
+import { listByPage, deleteById, add, update, updateStatus, addMenus } from '@/api/role'
 import { formatPageParams } from '@/utils/pageUtil'
-import RoleMenu from '@/views/system/role/components/RoleMenu'
+import { listMenusByRoleId, listTree } from '@/api/menu'
+import * as _ from 'lodash'
 
 export default {
   name: 'Role',
   components: {
     STable,
     Ellipsis,
-    IconSelector,
-    RoleMenu
+    IconSelector
   },
   props: {},
   data () {
     return {
-      showRoleMenu: false,
       roleId: 0,
       loading: false,
       drawerVisible: false,
@@ -323,7 +341,11 @@ export default {
         }
       ],
       currentRecord: {},
-      editMode: false
+      editMode: false,
+      visible: false,
+      selectedKeys: [],
+      checkedKeys: [],
+      treeData: []
     }
   },
   mounted () {},
@@ -475,13 +497,73 @@ export default {
       this.parentMenu = {}
     },
     editMenus (record) {
-      debugger
       this.roleId = record.id
-      this.showRoleMenu = true
+      this.visible = true
+      this.listTreeData()
+      this.listMenusByRoleId()
     },
-    clearShowRoleMenu () {
-      this.showRoleMenu = false
-      this.roleId = 0
+    listTreeData () {
+      listTree({}).then(res => {
+        const { status, message, data } = res
+        if (status === 1) {
+          this.treeData = data
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        this.confirmLoading = false
+        console.error(err)
+      })
+    },
+    listMenusByRoleId () {
+      listMenusByRoleId(this.roleId).then(res => {
+        const { status, message, data } = res
+        if (status === 1) {
+          if (!_.isNil(data)) {
+            const ids = []
+            data.forEach(item => {
+              ids.push(item.id)
+            })
+            this.checkedKeys = ids
+          }
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        this.confirmLoading = false
+        console.error(err)
+      })
+    },
+    handleRoleMenuOk (e) {
+      if (_.isNil(this.checkedKeys)) {
+        return
+      }
+      const data = { roleId: this.roleId, menus: [] }
+      const menus = []
+      this.checkedKeys.forEach(item => {
+        menus.push({ menuId: item })
+      })
+      data.menus = menus
+      addMenus(data).then(res => {
+        const { status, message } = res
+        if (status === 1) {
+          this.$message.success('添加菜单成功')
+          this.visible = false
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        this.confirmLoading = false
+        console.error(err)
+      })
+    },
+    handleCancle (e) {
+      this.visible = false
+    },
+    afterClose () {
+      this.treeData = []
+      this.checkedKeys = []
+      this.showRoleMenu = []
     }
   }
 }

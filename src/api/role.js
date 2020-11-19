@@ -59,3 +59,15 @@ export function updateStatus (data) {
     data: data
   })
 }
+
+/**
+ * 角色添加菜单
+ * @param data body 参数
+ */
+export function addMenus (data) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/addMenus`,
+    method: 'POST',
+    data: data
+  })
+}
