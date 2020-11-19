@@ -208,6 +208,7 @@
           :auto-expand-parent="true"
           :selected-keys="selectedKeys"
           :tree-data="treeData"
+          :checkStrictly="true"
           @check="onCheck"
         />
       </a-modal>
@@ -536,9 +537,6 @@ export default {
       })
     },
     handleRoleMenuOk (e) {
-      if (_.isNil(this.checkedNodes) || this.checkedNodes.length <= 0) {
-        return
-      }
       const data = { roleId: this.roleId, menus: [] }
       const menus = []
       this.checkedNodes.forEach(item => {
@@ -548,7 +546,6 @@ export default {
           menus.push({ menuId: item.data.props.parentId })
         }
       })
-      debugger
       data.menus = _.uniqBy(menus, 'menuId')
       addMenus(data).then(res => {
         const { status, message } = res
