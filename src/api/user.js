@@ -72,3 +72,16 @@ export function resetPassword (id) {
     method: 'GET'
   })
 }
+
+/**
+ * 修改用户角色
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function updateRoles (data) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/user/updateRoles`,
+    method: 'POST',
+    data: data
+  })
+}

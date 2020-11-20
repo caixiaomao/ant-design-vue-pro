@@ -71,3 +71,29 @@ export function addMenus (data) {
     data: data
   })
 }
+
+/**
+ * 根据用户id查询用户角色
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function listRolesByUserId (params) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/listRolesByUserId`,
+    method: 'GET',
+    params: params
+  })
+}
+
+/**
+ * 角色列表
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function list (data) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/role/list`,
+    method: 'POST',
+    data: data
+  })
+}

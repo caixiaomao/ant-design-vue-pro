@@ -164,9 +164,10 @@
             label="手机"
             prop="phone"
           >
-            <a-input
+            <a-input-number
               v-model="formData.phone"
               placeholder="请输入手机"
+              style="width: 200px"
             />
           </a-form-model-item>
           <a-form-model-item
@@ -230,12 +231,35 @@
         </div>
       </a-drawer>
     </a-card>
+
+    <!-- 用户角色 -->
+    <a-modal
+      title="用户角色"
+      :visible="roleVisible"
+      :confirm-loading="roleConfirmLoading"
+      :destroyOnClose="true"
+      :maskClosable="false"
+      @ok="handleRoleOk"
+      @cancel="handleRoleCancle"
+    >
+      <a-select
+        mode="multiple"
+        placeholder="请选择角色"
+        style="width: 400px"
+        v-model="userRoles"
+      >
+        <a-select-option v-for="item in roles" :key="item.id">
+          {{ item.name }}
+        </a-select-option>
+      </a-select>
+    </a-modal>
   </page-header-wrapper>
 </template>
 
 <script>import { STable, Ellipsis, IconSelector } from '@/components'
+import { listByPage, deleteById, add, edit, updateStatus, resetPassword, updateRoles } from '@/api/user'
 // eslint-disable-next-line no-unused-vars
-import { listByPage, deleteById, add, edit, updateStatus, resetPassword } from '@/api/user'
+import { listRolesByUserId, list } from '@/api/role'
 import { formatPageParams } from '@/utils/pageUtil'
 import * as _ from 'lodash'
 import md5 from 'md5'
@@ -377,7 +401,12 @@ export default {
         }
       ],
       currentRecord: {},
-      editMode: false
+      editMode: false,
+      roleVisible: false,
+      roleConfirmLoading: false,
+      userRoles: [],
+      roles: [],
+      currentUser: {}
     }
   },
   mounted () {},
@@ -527,7 +556,6 @@ export default {
       this.currentRecord = {}
       this.editMode = false
     },
-    editRoles (record) {},
     resetPassword (record) {
       const that = this
       this.$confirm({
@@ -565,6 +593,67 @@ export default {
         },
         onCancel () {
         }
+      })
+    },
+    handleRoleOk () {
+      const data = {}
+      data.userId = this.currentUser.id
+      data.roles = this.userRoles
+      updateRoles(data).then(res => {
+        const { status, message } = res
+        if (status === 1) {
+          this.roleVisible = false
+          this.$message.success('修改用户角色成功')
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        console.error(err)
+      })
+    },
+    handleRoleCancle () {
+      this.roleVisible = false
+    },
+    editRoles (record) {
+      this.currentUser = record
+      this.roleVisible = true
+      this.listRoles()
+      this.listRolesByUserId(record)
+    },
+    listRoles () {
+      list({}).then(res => {
+        const { status, message, data } = res
+        if (status === 1) {
+          if (_.isNil(data)) {
+            this.roles = []
+          } else {
+            this.roles = data
+          }
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        console.error(err)
+      })
+    },
+    listRolesByUserId (record) {
+      listRolesByUserId({ userId: record.id }).then(res => {
+        const { status, message, data } = res
+        if (status === 1) {
+          if (_.isNil(data)) {
+            this.userRoles = []
+          } else {
+            const userRoles = []
+            data.forEach(item => {
+              userRoles.push(item.id)
+            })
+            this.userRoles = userRoles
+          }
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        console.error(err)
       })
     }
   }
