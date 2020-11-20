@@ -280,6 +280,12 @@ export const asyncRouterMap = [
             meta: { title: '角色管理', icon: 'usergroup-add' }
           },
           {
+            path: '/sys/user',
+            name: 'User',
+            component: () => import('@/views/system/user/index'),
+            meta: { title: '用户管理', icon: 'user-add' }
+          },
+          {
             path: '/sys/client',
             name: 'Client',
             component: () => import('@/views/system/client/index'),

@@ -10,21 +10,26 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="标题">
-                <a-input v-model="queryParam.title" placeholder="标题"/>
+              <a-form-item label="账号">
+                <a-input v-model="queryParam.username" placeholder="账号"/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="编码">
-                  <a-input v-model="queryParam.code" placeholder="编码"/>
+                <a-form-item label="手机">
+                  <a-input v-model="queryParam.phone" placeholder="手机"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="邮箱">
+                  <a-input v-model="queryParam.email" placeholder="邮箱"/>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="状态">
                   <a-select v-model="queryParam.status" placeholder="请选择">
                     <a-select-option value="">全部</a-select-option>
-                    <a-select-option :value="1">启用</a-select-option>
+                    <a-select-option :value="1">正常</a-select-option>
                     <a-select-option :value="0">禁用</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -35,7 +40,7 @@
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => queryParam = {status: ''}">重置</a-button>
                 <a style="margin-left: 8px" @click="toggleAdvanced">
-                  \{{ advanced ? '收起' : '展开' }}
+                  {{ advanced ? '收起' : '展开' }}
                   <a-icon :type="advanced ? 'up' : 'down'"/>
                 </a>
               </span>
@@ -58,16 +63,16 @@
         :showPagination="true"
       >
         <template slot="index" slot-scope="text, record, index">
-          \{{ index + 1 }}
+          {{ index + 1 }}
         </template>
         <template slot="_title" slot-scope="text, record, index">
-          <ellipsis :length="20" tooltip>\{{ text }}</ellipsis>
+          <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="common" slot-scope="text, record, index">
-          <ellipsis :length="10" tooltip>\{{ text }}</ellipsis>
+          <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
         </template>
         <template slot="status" slot-scope="text, record, index">
-          <a-tag v-if="text === 1" color="blue">启用</a-tag>
+          <a-tag v-if="text === 1" color="blue">正常</a-tag>
           <a-tag v-else-if="text === 0" color="red">禁用</a-tag>
         </template>
         <template slot="action" slot-scope="text, record, index">
@@ -75,6 +80,12 @@
           <a-divider type="vertical" />
           <a-dropdown>
             <a-menu slot="overlay">
+              <a-menu-item @click="editRoles(record)">
+                角色
+              </a-menu-item>
+              <a-menu-item @click="resetPassword(record)">
+                重置密码
+              </a-menu-item>
               <a-menu-item v-if="record.status === 0" @click="updateStatus(record)">
                 启用
               </a-menu-item>
@@ -110,39 +121,77 @@
           :wrapperCol="wrapperCol"
         >
           <a-form-model-item
-            ref="title"
-            label="标题"
+            ref="name"
+            label="姓名"
             required
-            prop="title"
+            prop="name"
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
           >
             <a-input
-              v-model="formData.title"
-              placeholder="请输入标题"
+              v-model="formData.name"
+              placeholder="请输入姓名"
             />
           </a-form-model-item>
           <a-form-model-item
-            ref="name"
-            label="名称"
-            prop="name"
+            ref="username"
+            label="账号"
+            prop="username"
           >
             <a-input
-              v-model="formData.name"
-              placeholder="请输入名称"
+              v-model="formData.username"
+              placeholder="请输入账号"
             />
           </a-form-model-item>
           <a-form-model-item
-            ref="sort"
-            label="排序"
-            prop="sort"
+            v-if="!editMode"
+            ref="password"
+            prop="password"
           >
-            <a-input-number
-              v-model="formData.sort"
-              :defaultValue="1"
-              :max="9999"
-              placeholder="请输入排序"
+            <span slot="label">
+              密码
+              <a-tooltip title="请输入字母、数字、特殊符号等">
+                <a-icon type="question-circle-o" />
+              </a-tooltip>
+            </span>
+            <a-input-password
+              v-model="formData.password"
+              placeholder="请输入密码"
             />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="phone"
+            label="手机"
+            prop="phone"
+          >
+            <a-input
+              v-model="formData.phone"
+              placeholder="请输入手机"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="email"
+            label="邮箱"
+            prop="email"
+          >
+            <a-input
+              v-model="formData.email"
+              placeholder="请输入邮箱"
+            />
+          </a-form-model-item>
+          <a-form-model-item
+            ref="sex"
+            label="性别"
+            prop="sex"
+          >
+            <a-radio-group v-model="formData.sex" :default-value="1">
+              <a-radio :value="1">
+                男
+              </a-radio>
+              <a-radio :value="0">
+                女
+              </a-radio>
+            </a-radio-group>
           </a-form-model-item>
           <a-form-model-item
             ref="status"
@@ -157,17 +206,6 @@
                 否
               </a-radio>
             </a-radio-group>
-          </a-form-model-item>
-          <a-form-model-item
-            ref="description"
-            label="描述"
-            prop="description"
-          >
-            <a-textarea
-              :rows="3"
-              v-model="formData.description"
-              placeholder="请输入描述"
-            />
           </a-form-model-item>
         </a-form-model>
         <div
@@ -197,11 +235,12 @@
 
 <script>import { STable, Ellipsis, IconSelector } from '@/components'
 // eslint-disable-next-line no-unused-vars
-import { listByPage, deleteById, add, edit, updateStatus } from '@/api/{{ name }}'
+import { listByPage, deleteById, add, edit, updateStatus, resetPassword } from '@/api/user'
 import { formatPageParams } from '@/utils/pageUtil'
 import * as _ from 'lodash'
+import md5 from 'md5'
 export default {
-  name: '{{ name }}',
+  name: 'User',
   components: {
     STable,
     Ellipsis,
@@ -226,36 +265,48 @@ export default {
       // 表单数据
       formData: {
         name: '',
-        title: '',
+        username: '',
+        password: '',
         status: 1,
-        sort: 1,
-        description: ''
+        phone: '',
+        sex: 1,
+        email: '',
+        birthday: ''
       },
       // 默认数据
       defaultFormData: {
         name: '',
-        title: '',
+        username: '',
+        password: '',
         status: 1,
-        sort: 1,
-        description: ''
+        phone: '',
+        sex: 1,
+        email: '',
+        birthday: ''
       },
       rules: {
-        title: [
-          { required: true, message: '请输入标题', trigger: 'blur' },
-          { max: 30, message: '标题长度不能超过30', trigger: 'blur' }
+        username: [
+          { required: true, whitespace: true, message: '请输入账号', trigger: 'blur' },
+          { max: 30, message: '账号长度不能超过30', trigger: 'blur' }
         ],
         name: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
-          { max: 30, message: '名称长度不能超过30', trigger: 'blur' }
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { max: 10, message: '姓名长度不能超过10', trigger: 'blur' }
         ],
-        sort: [
-          { required: true, message: '排序不能为空', trigger: 'blur' }
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { max: 20, message: '密码长度不能超过20', trigger: 'blur' }
         ],
-        status: [
-          { required: true, message: '排序不能为空', trigger: 'blur' }
+        phone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { required: true, len: 11, message: '手机长度必须是11位', trigger: 'blur' }
         ],
-        description: [
-          { max: 100, message: '描述长度不能超过100', trigger: 'blur' }
+        email: [
+          { required: true, type: 'email', message: '邮箱为空或者格式错误', trigger: 'blur' },
+          { max: 50, message: '邮箱长度不能超过50', trigger: 'blur' }
+        ],
+        sex: [
+          { required: true, message: '性别不能为空', trigger: 'blur' }
         ]
       },
       // 高级搜索 展开/关闭
@@ -263,8 +314,9 @@ export default {
       // 查询参数
       queryParam: {
         name: '',
-        title: '',
-        code: '',
+        username: '',
+        phone: '',
+        email: '',
         status: ''
       },
       // 表头
@@ -277,17 +329,22 @@ export default {
           scopedSlots: { customRender: 'index' }
         },
         {
-          title: '标题',
-          dataIndex: 'title',
-          align: 'left',
+          title: '名称',
+          dataIndex: 'name',
+          align: 'center',
           scopedSlots: { customRender: '_title' }
         },
         {
-          title: '名称',
-          dataIndex: 'name',
+          title: '账号',
+          dataIndex: 'username',
+          align: 'center',
+          width: 100
+        },
+        {
+          title: '手机',
+          dataIndex: 'phone',
           align: 'left',
-          width: 150,
-          scopedSlots: { customRender: 'common' }
+          width: 150
         },
         {
           title: '状态',
@@ -435,6 +492,7 @@ export default {
               console.error(err)
             })
           } else {
+            data.password = md5(data.password)
             add(data).then(res => {
               this.confirmLoading = false
               const { status, message } = res
@@ -467,12 +525,51 @@ export default {
     // 清除缓存的数据
     clearData () {
       this.currentRecord = {}
+      this.editMode = false
+    },
+    editRoles (record) {},
+    resetPassword (record) {
+      const that = this
+      this.$confirm({
+        title: '确定重置密码？',
+        content: '重置密码将由系统生成随机密码，请谨慎操作！',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          if (record.id) {
+            resetPassword(record.id).then(res => {
+              const { status, message, data } = res
+              if (status === 1) {
+                that.$message.success('重置成功')
+                that.$confirm({
+                  title: '重置成功',
+                  content: `新密码：${data}，请妥善保管！`,
+                  okText: '确定',
+                  okType: 'success',
+                  cancelText: '关闭',
+                  onOk () {
+                  },
+                  onCancel () {
+                  }
+                })
+              } else {
+                that.$message.error(message)
+              }
+            }).catch(err => {
+              console.error(err)
+            })
+          } else {
+            that.$message.error('id为空')
+          }
+        },
+        onCancel () {
+        }
+      })
     }
   }
 }
 </script>
 
-{{#if style}}
 <style lang="scss" scoped>
 </style>
-{{/if}}
