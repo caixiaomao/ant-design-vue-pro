@@ -298,6 +298,61 @@ export const asyncRouterMap = [
             meta: { title: '字典管理', icon: 'font-colors' }
           }
         ]
+      },
+      {
+        path: '/user',
+        component: RouteView,
+        redirect: '/user/account/center',
+        name: 'UserAccount',
+        meta: { title: '用户账号', icon: 'safety-certificate' },
+        children: [
+          {
+            path: '/user/account/center',
+            name: 'AccountCenter',
+            component: () => import('@/views/system/user/account/center/index'),
+            meta: { title: '个人中心', icon: 'idcard' }
+          },
+          {
+            path: '/user/account/setting',
+            name: 'AccountSetting',
+            component: () => import('@/views/system/user/account/settings/Index'),
+            meta: { title: '个人设置', hideHeader: true, icon: 'setting' },
+            redirect: '/user/account/setting/base',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/user/account/setting/base',
+                name: 'BaseSetting',
+                component: () => import('@/views/system/user/account/settings/BaseSetting'),
+                meta: { title: '基本设置', hidden: true }
+              },
+              {
+                path: '/user/account/setting/security',
+                name: 'SecuritySetting',
+                component: () => import('@/views/system/user/account/settings/Security'),
+                meta: { title: '安全设置', hidden: true }
+              },
+              {
+                path: '/user/account/setting/custom',
+                name: 'CustomSetting',
+                component: () => import('@/views/system/user/account/settings/Custom'),
+                meta: { title: '个性化设置', hidden: true }
+              },
+              {
+                path: '/user/account/setting/binding',
+                name: 'BindingSetting',
+                component: () => import('@/views/system/user/account/settings/Binding'),
+                meta: { title: '账户绑定', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/user/account/setting/notification',
+                name: 'NotificationSetting',
+                component: () => import('@/views/system/user/account/settings/Notification'),
+                meta: { title: '消息通知', hidden: true }
+              }
+            ]
+          }
+        ]
       }
 
       // other
