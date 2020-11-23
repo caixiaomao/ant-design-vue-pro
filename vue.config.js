@@ -110,6 +110,14 @@ const vueConfig = {
         pathRewrite: {
           '^/gateway/upms_service': ''
         }
+      },
+      '/auth_service': {
+        target: 'http://127.0.0.1:7003',
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/gateway/auth_service': ''
+        }
       }
     }
   },

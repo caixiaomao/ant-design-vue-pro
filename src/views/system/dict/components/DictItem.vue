@@ -213,7 +213,7 @@
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
 // eslint-disable-next-line no-unused-vars
-import { listItemByPage, addItem, editItem, deleteItemById, updateItemStatus } from '@/api/dict_item'
+import { listItemByPage, addItem, editItem, deleteItemById, updateItemStatus } from '@/api/system/dict_item'
 import { formatPageParams } from '@/utils/pageUtil'
 import * as _ from 'lodash'
 export default {

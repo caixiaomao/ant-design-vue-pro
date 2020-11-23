@@ -257,9 +257,9 @@
 </template>
 
 <script>import { STable, Ellipsis, IconSelector } from '@/components'
-import { listByPage, deleteById, add, edit, updateStatus, resetPassword, updateRoles } from '@/api/user'
+import { listByPage, deleteById, add, edit, updateStatus, resetPassword, updateRoles } from '@/api/system/user'
 // eslint-disable-next-line no-unused-vars
-import { listRolesByUserId, list } from '@/api/role'
+import { listRolesByUserId, list } from '@/api/system/role'
 import { formatPageParams } from '@/utils/pageUtil'
 import * as _ from 'lodash'
 import md5 from 'md5'

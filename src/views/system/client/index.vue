@@ -271,7 +271,7 @@
 
 <script>
   import { STable, Ellipsis, IconSelector } from '@/components'
-  import { listByPage, deleteById, add, update } from '@/api/client'
+  import { listByPage, deleteById, add, update } from '@/api/system/client'
   import { formatPageParams } from '@/utils/pageUtil'
   import * as _ from 'lodash'
 

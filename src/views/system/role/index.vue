@@ -219,9 +219,9 @@
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
 // eslint-disable-next-line no-unused-vars
-import { listByPage, deleteById, add, update, updateStatus, addMenus } from '@/api/role'
+import { listByPage, deleteById, add, update, updateStatus, addMenus } from '@/api/system/role'
 import { formatPageParams } from '@/utils/pageUtil'
-import { listMenusByRoleId, listTree } from '@/api/menu'
+import { listMenusByRoleId, listTree } from '@/api/system/menu'
 import * as _ from 'lodash'
 
 export default {

@@ -12,5 +12,5 @@ if (process.env.NODE_ENV === 'mock') {
 export const API_PREFIX = {
   GATEWAY_SERVICE: GATEWAY,
   UPMS_SERVICE: process.env.NODE_ENV === 'mock' ? GATEWAY : GATEWAY + '/upms_service',
-  SYSTEM_SERVICE: process.env.NODE_ENV === 'mock' ? GATEWAY : GATEWAY + '/system_service'
+  AUTH_SERVICE: process.env.NODE_ENV === 'mock' ? GATEWAY : GATEWAY + '/auth_service'
 }

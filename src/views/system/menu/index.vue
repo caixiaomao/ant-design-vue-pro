@@ -321,7 +321,7 @@
 
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
-import { listByTreePage, deleteById, add, update, updateStatus } from '@/api/menu'
+import { listByTreePage, deleteById, add, update, updateStatus } from '@/api/system/menu'
 import { formatPageParams } from '@/utils/pageUtil'
 
 export default {
