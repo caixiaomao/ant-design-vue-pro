@@ -11,6 +11,7 @@ export function listByPage (data, params) {
     method: 'POST',
     data: data,
     params: params
+
   })
 }
 

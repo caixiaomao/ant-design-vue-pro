@@ -497,6 +497,7 @@
         this.formData = _.cloneDeep(this.defaultFormData)
       },
       handleOk (e) {
+        const that = this
         this.confirmLoading = true
         this.$refs.form.validate((valid) => {
           if (valid) {
@@ -523,12 +524,16 @@
             } else {
               add(data).then(res => {
                 this.confirmLoading = false
-                const { status, message } = res
+                const { status, message, data } = res
                 if (status === 1) {
                   this.$message.success('新增成功')
                   this.drawerVisible = false
                   this.clearData()
                   this.refreshTable()
+                  that.$success({
+                    title: '新增客户端成功',
+                    content: `客户端secret：${data}，请妥善保管！`
+                  })
                 } else {
                   this.$message.error(message)
                 }

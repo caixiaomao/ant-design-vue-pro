@@ -569,17 +569,10 @@ export default {
             resetPassword(record.id).then(res => {
               const { status, message, data } = res
               if (status === 1) {
-                that.$message.success('重置成功')
-                that.$confirm({
-                  title: '重置成功',
-                  content: `新密码：${data}，请妥善保管！`,
-                  okText: '确定',
-                  okType: 'success',
-                  cancelText: '关闭',
-                  onOk () {
-                  },
-                  onCancel () {
-                  }
+                that.$message.success('重置密码成功')
+                that.$success({
+                  title: '重置密码成功',
+                  content: `新密码：${data}，请妥善保管！`
                 })
               } else {
                 that.$message.error(message)
