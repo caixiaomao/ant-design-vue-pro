@@ -47,3 +47,15 @@ export function deleteById (id) {
     method: 'GET'
   })
 }
+
+/**
+ * 重置客户端 secret
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function resetClientSecret (id) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/client/resetClientSecret/${id}`,
+    method: 'GET'
+  })
+}

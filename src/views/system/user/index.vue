@@ -572,7 +572,8 @@ export default {
                 that.$message.success('重置密码成功')
                 that.$success({
                   title: '重置密码成功',
-                  content: `新密码：${data}，请妥善保管！`
+                  content: `新密码：${data}，请妥善保管！`,
+                  okText: '确定'
                 })
               } else {
                 that.$message.error(message)

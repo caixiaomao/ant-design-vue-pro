@@ -72,6 +72,9 @@
           <a-divider type="vertical" />
           <a-dropdown>
             <a-menu slot="overlay">
+              <a-menu-item @click="resetClientSecret(record)">
+                重置secret
+              </a-menu-item>
               <a-menu-item @click="handleDelete(record)">
                 删除
               </a-menu-item>
@@ -126,6 +129,7 @@
           <a-form-model-item
             ref="clientSecret"
             prop="clientSecret"
+            v-if="!this.editMode"
           >
             <span slot="label">
               客户端secret&nbsp;
@@ -270,299 +274,326 @@
 </template>
 
 <script>
-  import { STable, Ellipsis, IconSelector } from '@/components'
-  import { listByPage, deleteById, add, update } from '@/api/system/client'
-  import { formatPageParams } from '@/utils/pageUtil'
-  import * as _ from 'lodash'
+import { STable, Ellipsis, IconSelector } from '@/components'
+import { listByPage, deleteById, add, update, resetClientSecret } from '@/api/system/client'
+import { formatPageParams } from '@/utils/pageUtil'
+import * as _ from 'lodash'
 
-  export default {
-    name: 'Client',
-    components: {
-      STable,
-      Ellipsis,
-      IconSelector
-    },
-    props: {},
-    data () {
-      return {
-        loading: false,
-        drawerVisible: false,
-        confirmLoading: false,
-        modalTitle: '',
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 }
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 16 }
-        },
-        form: this.$form.createForm(this),
-        // 表单数据
-        formData: {
-          name: '',
-          clientId: '',
-          clientSecret: '',
-          scope: '',
-          resourceIds: '',
-          accessTokenValidity: 3600,
-          refreshTokenValidity: 7200,
-          authorizedGrantTypes: [],
-          webServerRedirectUri: '',
-          autoapprove: true,
-          additionalInformation: '',
-          description: ''
-        },
-        // 默认数据
-        defaultFormData: {
-          name: '',
-          clientId: '',
-          clientSecret: '',
-          scope: '',
-          resourceIds: '',
-          accessTokenValidity: 3600,
-          refreshTokenValidity: 7200,
-          authorizedGrantTypes: ['password', 'refresh_token'],
-          webServerRedirectUri: '',
-          autoapprove: true,
-          additionalInformation: '',
-          description: ''
-        },
-        rules: {
-          name: [
-            { required: true, message: '请输入客户端名称', trigger: 'blur' },
-            { max: 50, message: '客户端名称长度不能超过50', trigger: 'blur' }
-          ],
-          clientId: [
-            { required: true, message: '请输入客户端id', trigger: 'blur' },
-            { max: 100, message: '客户端id长度不能超过100', trigger: 'blur' }
-          ],
-          authorizedGrantTypes: [
-            { required: true, message: '授权方式不能为空', trigger: 'blur' }
-          ],
-          webServerRedirectUri: [
-            { required: true, message: '重定向地址不能为空', trigger: 'blur' },
-            { max: 200, message: '重定向地址长度不能超过200', trigger: 'blur' }
-          ],
-          accessTokenValidity: [
-            { required: true, message: '令牌有效期不能为空', trigger: 'blur' }
-          ],
-          refreshTokenValidity: [
-            { required: true, message: '刷新令牌有效期不能为空', trigger: 'blur' }
-          ],
-          description: [
-            { max: 200, message: '描述长度不能超过200', trigger: 'blur' }
-          ]
-        },
-        // 高级搜索 展开/关闭
-        advanced: false,
-        // 查询参数
-        queryParam: {
-          name: '',
-          clientId: '',
-          clientSecret: '',
-          autoapprove: ''
-        },
-        // 表头
-        columns: [
-          {
-            title: '序号',
-            dataIndex: 'id',
-            align: 'center',
-            scopedSlots: { customRender: 'index' }
-          },
-          {
-            title: '名称',
-            dataIndex: 'name',
-            sorter: true,
-            align: 'left',
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '客户端id',
-            dataIndex: 'clientId',
-            align: 'left',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '客户端secret',
-            dataIndex: 'clientSecret',
-            align: 'left',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '自动授权',
-            dataIndex: 'autoapprove',
-            align: 'center',
-            width: 150,
-            scopedSlots: { customRender: 'status' }
-          },
-          {
-            title: '创建时间',
-            dataIndex: 'createTime',
-            align: 'center',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '修改时间',
-            dataIndex: 'updateTime',
-            align: 'center',
-            width: 150,
-            scopedSlots: { customRender: 'common' }
-          },
-          {
-            title: '操作',
-            width: 200,
-            dataIndex: 'action',
-            align: 'center',
-            scopedSlots: { customRender: 'action' }
-          }
+export default {
+  name: 'Client',
+  components: {
+    STable,
+    Ellipsis,
+    IconSelector
+  },
+  props: {},
+  data () {
+    return {
+      loading: false,
+      drawerVisible: false,
+      confirmLoading: false,
+      modalTitle: '',
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      },
+      form: this.$form.createForm(this),
+      // 表单数据
+      formData: {
+        name: '',
+        clientId: '',
+        clientSecret: '',
+        scope: '',
+        resourceIds: '',
+        accessTokenValidity: 3600,
+        refreshTokenValidity: 7200,
+        authorizedGrantTypes: [],
+        webServerRedirectUri: '',
+        autoapprove: true,
+        additionalInformation: '',
+        description: ''
+      },
+      // 默认数据
+      defaultFormData: {
+        name: '',
+        clientId: '',
+        clientSecret: '',
+        scope: '',
+        resourceIds: '',
+        accessTokenValidity: 3600,
+        refreshTokenValidity: 7200,
+        authorizedGrantTypes: ['password', 'refresh_token'],
+        webServerRedirectUri: '',
+        autoapprove: true,
+        additionalInformation: '',
+        description: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入客户端名称', trigger: 'blur' },
+          { max: 50, message: '客户端名称长度不能超过50', trigger: 'blur' }
         ],
-        currentRecord: {},
-        editMode: false
-      }
-    },
-    mounted () {},
-    methods: {
-      toggleAdvanced () {
-        this.advanced = !this.advanced
+        clientId: [
+          { required: true, message: '请输入客户端id', trigger: 'blur' },
+          { max: 100, message: '客户端id长度不能超过100', trigger: 'blur' }
+        ],
+        authorizedGrantTypes: [
+          { required: true, message: '授权方式不能为空', trigger: 'blur' }
+        ],
+        webServerRedirectUri: [
+          { required: true, message: '重定向地址不能为空', trigger: 'blur' },
+          { max: 200, message: '重定向地址长度不能超过200', trigger: 'blur' }
+        ],
+        accessTokenValidity: [
+          { required: true, message: '令牌有效期不能为空', trigger: 'blur' }
+        ],
+        refreshTokenValidity: [
+          { required: true, message: '刷新令牌有效期不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { max: 200, message: '描述长度不能超过200', trigger: 'blur' }
+        ]
       },
-      // 加载数据方法 必须为 Promise 对象
-      loadData (params) {
-        this.loading = true
-        const pageParams = formatPageParams(params)
-        return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
-          const { status, data, message } = res
-          if (status === 1) {
-            return data
-          } else {
-            this.$message.error(message)
-          }
-          this.loading = false
-        }).catch(err => {
-          this.loading = false
-          console.error(err)
-          this.$message.error(err.message || '请求数据错误')
-        })
+      // 高级搜索 展开/关闭
+      advanced: false,
+      // 查询参数
+      queryParam: {
+        name: '',
+        clientId: '',
+        clientSecret: '',
+        autoapprove: ''
       },
-      handleDelete (record) {
-        const that = this
-        this.$confirm({
-          title: '确定删除？',
-          content: '删除后无法恢复，请谨慎操作！',
-          okText: '确定',
-          okType: 'danger',
-          cancelText: '取消',
-          onOk () {
-            if (record.id) {
-              deleteById(record.id).then(res => {
-                const { status, message } = res
-                if (status === 1) {
-                  that.$message.success('删除成功')
-                  that.refreshTable()
-                } else {
-                  that.$message.error(message)
-                }
-              }).catch(err => {
-                console.error(err)
-              })
-            } else {
-              that.$message.error('id为空')
-            }
-          },
-          onCancel () {
-          }
-        })
-      },
-      handleEdit (record) {
-        if (_.isNil(record.authorizedGrantTypes)) {
-          record.authorizedGrantTypes = []
-        } else {
-          record.authorizedGrantTypes = record.authorizedGrantTypes.split(',')
+      // 表头
+      columns: [
+        {
+          title: '序号',
+          dataIndex: 'id',
+          align: 'center',
+          scopedSlots: { customRender: 'index' }
+        },
+        {
+          title: '名称',
+          dataIndex: 'name',
+          sorter: true,
+          align: 'left',
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '客户端id',
+          dataIndex: 'clientId',
+          align: 'left',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '自动授权',
+          dataIndex: 'autoapprove',
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'status' }
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '修改时间',
+          dataIndex: 'updateTime',
+          align: 'center',
+          width: 150,
+          scopedSlots: { customRender: 'common' }
+        },
+        {
+          title: '操作',
+          width: 200,
+          dataIndex: 'action',
+          align: 'center',
+          scopedSlots: { customRender: 'action' }
         }
-        this.modalTitle = '修改'
-        this.drawerVisible = true
-        this.editMode = true
-        this.currentRecord = record
-        this.formData = record
-      },
-      handleAdd () {
-        this.modalTitle = '新增'
-        this.drawerVisible = true
-        this.editMode = false
-        this.currentRecord = {}
-        this.formData = _.cloneDeep(this.defaultFormData)
-      },
-      handleOk (e) {
-        const that = this
-        this.confirmLoading = true
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            // 修改
-            const data = _.cloneDeep(this.formData)
-            data.authorizedGrantTypes = _.join(data.authorizedGrantTypes, ',')
-            if (this.currentRecord.id) {
-              data.id = this.currentRecord.id
-              update(data).then(res => {
-                const { status, message } = res
-                this.confirmLoading = false
-                if (status === 1) {
-                  this.$message.success('修改成功')
-                  this.drawerVisible = false
-                  this.clearData()
-                  this.refreshTable()
-                } else {
-                  this.$message.error(message)
-                }
-              }).catch(err => {
-                this.confirmLoading = false
-                console.error(err)
-              })
-            } else {
-              add(data).then(res => {
-                this.confirmLoading = false
-                const { status, message, data } = res
-                if (status === 1) {
-                  this.$message.success('新增成功')
-                  this.drawerVisible = false
-                  this.clearData()
-                  this.refreshTable()
-                  that.$success({
-                    title: '新增客户端成功',
-                    content: `客户端secret：${data}，请妥善保管！`
-                  })
-                } else {
-                  this.$message.error(message)
-                }
-              }).catch(err => {
-                this.confirmLoading = false
-                console.error(err)
-              })
-            }
+      ],
+      currentRecord: {},
+      editMode: false
+    }
+  },
+  mounted () {},
+  methods: {
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    // 加载数据方法 必须为 Promise 对象
+    loadData (params) {
+      this.loading = true
+      const pageParams = formatPageParams(params)
+      return listByPage(Object.assign(this.queryParam, pageParams)).then(res => {
+        const { status, data, message } = res
+        if (status === 1) {
+          return data
+        } else {
+          this.$message.error(message)
+        }
+        this.loading = false
+      }).catch(err => {
+        this.loading = false
+        console.error(err)
+        this.$message.error(err.message || '请求数据错误')
+      })
+    },
+    handleDelete (record) {
+      const that = this
+      this.$confirm({
+        title: '确定删除？',
+        content: '删除后无法恢复，请谨慎操作！',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          if (record.id) {
+            deleteById(record.id).then(res => {
+              const { status, message } = res
+              if (status === 1) {
+                that.$message.success('删除成功')
+                that.refreshTable()
+              } else {
+                that.$message.error(message)
+              }
+            }).catch(err => {
+              console.error(err)
+            })
           } else {
-            this.$message.warn('数据填写有误，请检查')
-            this.confirmLoading = false
+            that.$message.error('id为空')
           }
-        })
-      },
-      refreshTable () {
-        this.$refs.table.refresh()
-      },
-      drawerClose () {
-        this.drawerVisible = false
-        this.clearData()
-      },
-      // 清除缓存的数据
-      clearData () {
-        this.currentRecord = {}
-        this.parentMenu = {}
+        },
+        onCancel () {
+        }
+      })
+    },
+    handleEdit (record) {
+      if (_.isNil(record.authorizedGrantTypes)) {
+        record.authorizedGrantTypes = []
+      } else {
+        record.authorizedGrantTypes = record.authorizedGrantTypes.split(',')
       }
+      this.modalTitle = '修改'
+      this.drawerVisible = true
+      this.editMode = true
+      this.currentRecord = record
+      this.formData = record
+    },
+    handleAdd () {
+      this.modalTitle = '新增'
+      this.drawerVisible = true
+      this.editMode = false
+      this.currentRecord = {}
+      this.formData = _.cloneDeep(this.defaultFormData)
+    },
+    handleOk (e) {
+      const that = this
+      this.confirmLoading = true
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          // 修改
+          const data = _.cloneDeep(this.formData)
+          data.authorizedGrantTypes = _.join(data.authorizedGrantTypes, ',')
+          if (this.currentRecord.id) {
+            data.id = this.currentRecord.id
+            update(data).then(res => {
+              const { status, message } = res
+              this.confirmLoading = false
+              if (status === 1) {
+                this.$message.success('修改成功')
+                this.drawerVisible = false
+                this.clearData()
+                this.refreshTable()
+              } else {
+                this.$message.error(message)
+              }
+            }).catch(err => {
+              this.confirmLoading = false
+              console.error(err)
+            })
+          } else {
+            add(data).then(res => {
+              this.confirmLoading = false
+              const { status, message, data } = res
+              if (status === 1) {
+                this.$message.success('新增成功')
+                this.drawerVisible = false
+                this.clearData()
+                this.refreshTable()
+                that.$success({
+                  title: '新增客户端成功',
+                  content: `客户端secret：${data}，请妥善保管！`,
+                  okText: '确定'
+                })
+              } else {
+                this.$message.error(message)
+              }
+            }).catch(err => {
+              this.confirmLoading = false
+              console.error(err)
+            })
+          }
+        } else {
+          this.$message.warn('数据填写有误，请检查')
+          this.confirmLoading = false
+        }
+      })
+    },
+    refreshTable () {
+      this.$refs.table.refresh()
+    },
+    drawerClose () {
+      this.drawerVisible = false
+      this.clearData()
+    },
+    // 清除缓存的数据
+    clearData () {
+      this.currentRecord = {}
+      this.parentMenu = {}
+    },
+    resetClientSecret (record) {
+      const that = this
+      this.$confirm({
+        title: '确定重置？',
+        content: '重置secret将由系统随机生成，请谨慎操作！',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          if (record.id) {
+            resetClientSecret(record.id).then(res => {
+              const { status, message, data } = res
+              if (status === 1) {
+                that.$message.success('重置secret成功')
+                that.$success({
+                  title: '重置secret成功',
+                  content: `新secret：${data}，请妥善保管！`,
+                  okText: '确定'
+                })
+              } else {
+                that.$message.error(message)
+              }
+            }).catch(err => {
+              console.error(err)
+            })
+          } else {
+            that.$message.error('id为空')
+          }
+        },
+        onCancel () {
+        }
+      })
     }
   }
+}
 </script>
 
-  <style lang="scss" scoped>
-  </style>
+<style lang="scss" scoped>
+</style>
