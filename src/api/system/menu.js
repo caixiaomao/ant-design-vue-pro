@@ -96,3 +96,15 @@ export function listMenusByRoleId (roleId) {
     method: 'GET'
   })
 }
+
+/**
+ * 根据菜单id查询菜单
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function getMenuById (id) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/menu/${id}`,
+    method: 'GET'
+  })
+}

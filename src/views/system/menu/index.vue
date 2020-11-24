@@ -321,7 +321,7 @@
 
 <script>
 import { STable, Ellipsis, IconSelector } from '@/components'
-import { listByTreePage, deleteById, add, update, updateStatus } from '@/api/system/menu'
+import { listByTreePage, deleteById, add, update, updateStatus, getMenuById } from '@/api/system/menu'
 import { formatPageParams } from '@/utils/pageUtil'
 
 export default {
@@ -561,7 +561,16 @@ export default {
       this.drawerVisible = true
       this.editMode = true
       this.currentRecord = record
-      this.formData = record
+      getMenuById(record.id).then(res => {
+        const { status, message, data } = res
+        if (status === 1) {
+          this.formData = data
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        console.error(err)
+      })
     },
     handleAdd () {
       this.modalTitle = '新增'
