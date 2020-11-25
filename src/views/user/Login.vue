@@ -40,6 +40,25 @@
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input-password>
           </a-form-item>
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input
+                  size="large"
+                  placeholder="请输入验证码"
+                  v-decorator="[
+                    'validateCode',
+                    {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}
+                  ]"
+                >
+                  <a-icon slot="prefix" type="safety-certificate" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <img :src="imageBase64" alt="验证码" @click="validateCode" style="width: 105px">
+            </a-col>
+          </a-row>
         </a-tab-pane>
         <a-tab-pane key="tab2" tab="手机号登录">
           <a-form-item>
@@ -120,6 +139,7 @@ import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 import { getSmsCaptcha, get2step } from '@/api/login'
+import { validateCode } from '@/api/system/login'
 
 export default {
   components: {
@@ -141,7 +161,9 @@ export default {
         // login type: 0 email, 1 username, 2 telephone
         loginType: 0,
         smsSendBtn: false
-      }
+      },
+      imageBase64: '',
+      validateCodeId: ''
     }
   },
   created () {
@@ -153,6 +175,7 @@ export default {
         this.requiredTwoStepCaptcha = false
       })
     // this.requiredTwoStepCaptcha = true
+    this.validateCode()
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
@@ -182,7 +205,7 @@ export default {
 
       state.loginBtn = true
 
-      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password'] : ['mobile', 'captcha']
+      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password', 'validateCode'] : ['mobile', 'captcha']
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
@@ -276,6 +299,19 @@ export default {
         message: '错误',
         description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
         duration: 4
+      })
+    },
+    validateCode () {
+      validateCode('image').then(res => {
+        const { status, message, data } = res
+        if (status === 1) {
+          this.imageBase64 = data.imageBase64
+          this.validateCodeId = data.validateCodeId
+        } else {
+          this.$message.error(message)
+        }
+      }).catch(err => {
+        console.error(err)
       })
     }
   }

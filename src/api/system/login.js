@@ -13,3 +13,16 @@ export function token (data, params) {
     params: params
   })
 }
+
+/**
+ * 获取验证码
+ * @param type
+ * @returns {AxiosPromise}
+ */
+export function validateCode (type) {
+  // todo 支持多种验证码
+  return axios({
+    url: `${API_PREFIX.AUTH_SERVICE}/api/validate/code/image`,
+    method: 'GET'
+  })
+}
