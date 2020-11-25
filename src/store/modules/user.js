@@ -1,6 +1,8 @@
 import storage from 'store'
+// eslint-disable-next-line no-unused-vars
 import { login, getInfo, logout } from '@/api/login'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { token } from '@/api/system/login'
+import { ACCESS_TOKEN, TOKEN_INFO } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
 
 const user = {
@@ -36,11 +38,30 @@ const user = {
     // 登录
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        login(userInfo).then(response => {
+        // todo 注释原始登录
+        /* login(userInfo).then(response => {
           const result = response.result
           storage.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', result.token)
           resolve()
+        }).catch(error => {
+          reject(error)
+        }) */
+        token(userInfo).then(data => {
+          console.log('login params', userInfo)
+          console.log('token', data)
+          if (data) {
+            // eslint-disable-next-line no-unused-vars,camelcase
+            const { access_token, expires_in, user_id, username } = data
+            storage.set(TOKEN_INFO, data)
+            // todo 提前5分钟失效
+            // eslint-disable-next-line camelcase
+            storage.set(ACCESS_TOKEN, access_token, (expires_in - 30) * 1000)
+            commit('SET_TOKEN', access_token)
+            resolve()
+          } else {
+            reject(new Error('获取token失败'))
+          }
         }).catch(error => {
           reject(error)
         })

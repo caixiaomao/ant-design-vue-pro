@@ -1,5 +1,7 @@
 export const ACCESS_TOKEN = 'Access-Token'
 
+export const TOKEN_INFO = 'TOKEN_INFO'
+
 export const SIDEBAR_TYPE = 'sidebar_type'
 export const TOGGLE_MOBILE_TYPE = 'is_mobile'
 export const TOGGLE_NAV_THEME = 'nav_theme'

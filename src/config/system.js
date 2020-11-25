@@ -14,3 +14,13 @@ export const API_PREFIX = {
   UPMS_SERVICE: process.env.NODE_ENV === 'mock' ? GATEWAY : GATEWAY + '/upms_service',
   AUTH_SERVICE: process.env.NODE_ENV === 'mock' ? GATEWAY : GATEWAY + '/auth_service'
 }
+
+/**
+ * 登录相关配置
+ * @type {{CLIENT_SECRET: string, CLIENT_ID: string, GRANT_TYPE: string}}
+ */
+export const LOGIN_CONFIG = {
+  CLIENT_ID: 'admin',
+  CLIENT_SECRET: '21232f297a57a5a743894a0e4a801fc3',
+  GRANT_TYPE: 'password'
+}

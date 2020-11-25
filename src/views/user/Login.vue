@@ -209,11 +209,11 @@ export default {
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          console.log('login form', values)
           const loginParams = { ...values }
           delete loginParams.username
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
           loginParams.password = md5(values.password)
+          loginParams.validateCodeId = this.validateCodeId
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))
@@ -294,6 +294,7 @@ export default {
       this.isLoginError = false
     },
     requestFailed (err) {
+      this.validateCode()
       this.isLoginError = true
       this.$notification['error']({
         message: '错误',
