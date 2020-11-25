@@ -5,7 +5,7 @@
         <div class="header">
           <a href="/">
             <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">Ant Design</span>
+            <span class="title">Cloud Miao</span>
           </a>
         </div>
         <!-- todo 修改登录描述 -->
