@@ -1,5 +1,6 @@
-import storage from 'store'
-// eslint-disable-next-line no-unused-vars
+// import storage from 'store'
+/* eslint-disable no-unused-vars,camelcase */
+import { storage, expireInSecond } from '@/utils/storageUtil'
 import { login, getInfo, logout } from '@/api/login'
 import { token } from '@/api/system/login'
 import { ACCESS_TOKEN, TOKEN_INFO } from '@/store/mutation-types'
@@ -51,12 +52,11 @@ const user = {
           console.log('login params', userInfo)
           console.log('token', data)
           if (data) {
-            // eslint-disable-next-line no-unused-vars,camelcase
             const { access_token, expires_in, user_id, username } = data
             storage.set(TOKEN_INFO, data)
             // todo 提前5分钟失效
-            // eslint-disable-next-line camelcase
-            storage.set(ACCESS_TOKEN, access_token, (expires_in - 30) * 1000)
+            // storage.set(ACCESS_TOKEN, access_token, (expires_in - 30) * 1000)
+            expireInSecond(ACCESS_TOKEN, access_token, expires_in - 30)
             commit('SET_TOKEN', access_token)
             resolve()
           } else {
