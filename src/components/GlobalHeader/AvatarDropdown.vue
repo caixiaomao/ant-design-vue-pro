@@ -58,6 +58,10 @@ export default {
           //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
           // }).catch(() => console.log('Oops errors!'))
           return this.$store.dispatch('Logout').then(() => {
+            // todo 刷新一下，防止正常退出再次登录路由重复
+            setTimeout(() => {
+              window.location.reload()
+            }, 20)
             this.$router.push({ name: 'login' })
           })
         },

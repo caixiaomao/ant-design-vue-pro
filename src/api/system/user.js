@@ -86,3 +86,15 @@ export function updateRoles (data) {
     data: data
   })
 }
+
+/**
+ * 根据用户id查询用户信息
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function getUserById (id) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/user/${id}`,
+    method: 'GET'
+  })
+}

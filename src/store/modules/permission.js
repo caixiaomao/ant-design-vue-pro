@@ -37,6 +37,7 @@ function hasRole(roles, route) {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function filterAsyncRouter (routerMap, roles) {
   const accessedRouters = routerMap.filter(route => {
     if (hasPermission(roles.permissionList, route)) {
@@ -64,9 +65,12 @@ const permission = {
   actions: {
     GenerateRoutes ({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
-        const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        commit('SET_ROUTERS', accessedRouters)
+        // eslint-disable-next-line no-unused-vars
+        const { userInfo } = data
+        // todo 此处组装菜单树
+        console.log('菜单信息', userInfo)
+        // const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        commit('SET_ROUTERS', asyncRouterMap)
         resolve()
       })
     }

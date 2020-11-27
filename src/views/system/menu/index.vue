@@ -491,7 +491,6 @@ export default {
       this.loading = true
       const pageParams = formatPageParams(params)
       return listByTreePage(Object.assign(this.queryParam, pageParams)).then(res => {
-        console.log('menu 分页列表', res)
         const { status, data, message } = res
         if (status === 1) {
           return data

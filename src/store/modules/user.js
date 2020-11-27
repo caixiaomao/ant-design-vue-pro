@@ -3,8 +3,10 @@
 import { storage, expireInSecond } from '@/utils/storageUtil'
 import { login, getInfo, logout } from '@/api/login'
 import { token } from '@/api/system/login'
-import { ACCESS_TOKEN, TOKEN_INFO } from '@/store/mutation-types'
+import { ACCESS_TOKEN, TOKEN_INFO, USER_INFO } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
+import { getUserById } from '@/api/system/user'
+import notification from 'ant-design-vue/es/notification'
 
 const user = {
   state: {
@@ -13,7 +15,7 @@ const user = {
     welcome: '',
     avatar: '',
     roles: [],
-    info: {}
+    userInfo: {}
   },
 
   mutations: {
@@ -22,7 +24,7 @@ const user = {
     },
     SET_NAME: (state, { name, welcome }) => {
       state.name = name
-      state.welcome = welcome
+      // state.welcome = welcome
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -30,8 +32,8 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
-    SET_INFO: (state, info) => {
-      state.info = info
+    SET_USER_INFO: (state, info) => {
+      state.userInfo = info
     }
   },
 
@@ -71,7 +73,8 @@ const user = {
     // 获取用户信息
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
-        getInfo().then(response => {
+        // todo 屏蔽获取用户信息
+        /* getInfo().then(response => {
           const result = response.result
 
           if (result.role && result.role.permissions.length > 0) {
@@ -96,7 +99,31 @@ const user = {
           resolve(response)
         }).catch(error => {
           reject(error)
-        })
+        }) */
+        const tokenInfo = storage.get(TOKEN_INFO)
+        // 获取用户信息
+        if (tokenInfo) {
+          getUserById(tokenInfo.user_id).then(res => {
+            console.log('获取用户信息', res)
+            const { status, message, data } = res
+            if (status === 1) {
+              storage.set(USER_INFO, data)
+              commit('SET_NAME', { name: data.name })
+              commit('SET_AVATAR', data.avatar)
+              commit('SET_ROLES', [])
+              commit('SET_USER_INFO', data)
+              resolve(data)
+            } else {
+              notification.error({
+                message: '错误',
+                description: message || '获取用户信息失败'
+              })
+            }
+          }).catch(err => {
+            console.error(err)
+            reject(err)
+          })
+        }
       })
     },
 
@@ -106,7 +133,10 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          commit('SET_USER_INFO', null)
           storage.remove(ACCESS_TOKEN)
+          storage.remove(TOKEN_INFO)
+          storage.remove(USER_INFO)
           resolve()
         }).catch(() => {
           resolve()
