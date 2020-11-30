@@ -204,9 +204,8 @@
           v-model="checkedKeys"
           :maskClosable="false"
           checkable
-          :replaceFields="{children:'children', title:'title', key:'id'}"
-          :auto-expand-parent="true"
-          :selected-keys="selectedKeys"
+          :replace-fields="{children:'children', title:'title', key:'id'}"
+          :auto-expand-parent="false"
           :tree-data="treeData"
           :checkStrictly="true"
           @check="onCheck"
@@ -345,7 +344,6 @@ export default {
       currentRecord: {},
       editMode: false,
       visible: false,
-      selectedKeys: [],
       checkedKeys: [],
       treeData: [],
       checkedNodes: []
@@ -524,7 +522,8 @@ export default {
           if (!_.isNil(data)) {
             const ids = []
             data.forEach(item => {
-              ids.push(item.id)
+              // 菜单树中是字符串
+              ids.push(item.id + '')
             })
             this.checkedKeys = ids
           }
@@ -541,10 +540,6 @@ export default {
       const menus = []
       this.checkedNodes.forEach(item => {
         menus.push({ menuId: item.data.props.id })
-        // 上级菜单也保存，跳过根菜单
-        if (item.data.props.parentId !== 0) {
-          menus.push({ menuId: item.data.props.parentId })
-        }
       })
       data.menus = _.uniqBy(menus, 'menuId')
       addMenus(data).then(res => {
@@ -569,7 +564,6 @@ export default {
       this.showRoleMenu = []
     },
     onCheck (checkedKeys, e) {
-      console.log(e)
       this.checkedNodes = e.checkedNodes
     }
   }

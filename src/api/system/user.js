@@ -98,3 +98,15 @@ export function getUserById (id) {
     method: 'GET'
   })
 }
+
+/**
+ * 获取用户菜单
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function userMenuTree (id) {
+  return axios({
+    url: `${API_PREFIX.UPMS_SERVICE}/api/user/menuTree/${id}`,
+    method: 'GET'
+  })
+}
