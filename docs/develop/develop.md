@@ -29,3 +29,8 @@ http://mockjs.com/examples.html
 ```
 scopedSlots: { customRender: '_title' }
 ```
+
+## 用户菜单
+根据 src/store/index.js 中引入的 permission 权限，有两种方案：
+- 前端配置菜单，根据后台返回的用户角色筛选 (src/store/modules/permission.js)
+- 菜单由后端动态配置和返回，在前端动态组装菜单树 （src/store/modules/async-router.js）

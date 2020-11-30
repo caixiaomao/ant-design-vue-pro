@@ -67,8 +67,7 @@ const permission = {
       return new Promise(resolve => {
         // eslint-disable-next-line no-unused-vars
         const { userInfo } = data
-        // todo 此处组装菜单树
-        console.log('菜单信息', userInfo)
+        // todo 屏蔽菜单筛选
         // const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         commit('SET_ROUTERS', asyncRouterMap)
         resolve()

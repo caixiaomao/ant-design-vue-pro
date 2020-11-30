@@ -2,6 +2,8 @@
 import * as loginService from '@/api/login'
 // eslint-disable-next-line
 import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
+import { userMenuTree } from '@/api/system/user'
+import notification from 'ant-design-vue/es/notification'
 
 // 前端路由表
 const constantRouterComponents = {
@@ -78,14 +80,41 @@ const rootRouter = {
  * @param token
  * @returns {Promise<Router>}
  */
-export const generatorDynamicRouter = (token) => {
+export const generatorDynamicRouter = (userInfo) => {
   return new Promise((resolve, reject) => {
-    loginService.getCurrentUserNav(token).then(res => {
+    /* loginService.getCurrentUserNav(token).then(res => {
       console.log('res', res)
       const { result } = res
       const menuNav = []
       const childrenNav = []
       //      后端数据, 根级树数组,  根级 PID
+      listToTree(result, childrenNav, 0)
+      rootRouter.children = childrenNav
+      menuNav.push(rootRouter)
+      console.log('menuNav', menuNav)
+      const routers = generator(menuNav)
+      routers.push(notFoundRouter)
+      console.log('routers', routers)
+      resolve(routers)
+    }).catch(err => {
+      reject(err)
+    }) */
+    userMenuTree(userInfo.id).then(res => {
+      // todo 组装用户菜单
+      const { status, data, message } = res
+      if (status === 1) {
+        return data
+      } else {
+        notification.error({
+          message: '错误',
+          description: message || '查询用户菜单失败'
+        })
+      }
+      console.log('res', res)
+      const { result } = res
+      const menuNav = []
+      const childrenNav = []
+      // 后端数据, 根级树数组,  根级 PID
       listToTree(result, childrenNav, 0)
       rootRouter.children = childrenNav
       menuNav.push(rootRouter)
