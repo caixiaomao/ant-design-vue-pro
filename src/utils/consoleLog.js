@@ -4,11 +4,10 @@ const chalk = require('chalk')
 const printConsoleLog = {}
 
 printConsoleLog.print = function () {
-  console.log('process.env.NODE_ENV', process.env.NODE_ENV)
   if (process.env.NODE_ENV === 'development') {
-    console.log(chalk.yellow(figlet.textSync('Cloud Miao', {
+    console.log(chalk.italic.yellow(figlet.textSync('Cloud Miao', {
       font: 'big',
-      horizontalLayout: 'default',
+      horizontalLayout: 'fitted',
       verticalLayout: 'default',
       width: 80,
       whitespaceBreak: true

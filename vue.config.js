@@ -134,6 +134,7 @@ const vueConfig = {
 if (process.env.VUE_APP_PREVIEW === 'true') {
   console.log('VUE_APP_PREVIEW', true)
   console.log('NODE_ENV', process.env.NODE_ENV)
+  // todo 启动时控制台打印信息
   printConsoleLog.print()
   // add `ThemeColorReplacer` plugin to webpack plugins
   vueConfig.configureWebpack.plugins.push(createThemeColorReplacerPlugin())
