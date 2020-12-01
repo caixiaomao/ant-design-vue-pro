@@ -92,6 +92,15 @@ const rootRouter = {
 }
 
 /**
+ * 布局组件
+ */
+const constantLayoutComponents = {
+  BasicLayout: BasicLayout,
+  BlankLayout: BlankLayout,
+  RouteView: RouteView,
+  PageView: PageView
+}
+/**
  * 动态生成菜单
  * @param token
  * @returns {Promise<Router>}
@@ -127,7 +136,6 @@ export const generatorDynamicRouter = (userInfo) => {
           reject(new Error('用户未分配菜单'))
         }
         const menuNav = []
-        debugger
         const routers = buildUserMenuTree(data)
         console.log('用户菜单树', routers)
         rootRouter.children = rootRouter.children.concat(routers)
@@ -160,7 +168,8 @@ export const buildUserMenuTree = (menus) => {
       key: item.id,
       path: item.path,
       name: item.name,
-      component: () => import(`@/views/${item.component}`),
+      // 布局组件还是自定义组件
+      component: (constantLayoutComponents[item.component]) || (() => import(`@/views${item.component}`)),
       meta: {
         title: title,
         icon: icon || undefined,

@@ -263,7 +263,7 @@ export const asyncRouterMap = [
       },
       {
         path: '/sys',
-        name: 'sys',
+        name: 'Sys',
         component: RouteView,
         meta: { title: '系统管理', icon: 'setting' },
         children: [
