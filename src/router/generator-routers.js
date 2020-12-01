@@ -4,6 +4,8 @@ import * as loginService from '@/api/login'
 import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
 import { userMenuTree } from '@/api/system/user'
 import notification from 'ant-design-vue/es/notification'
+import * as _ from 'lodash'
+import { bxAnaalyse } from '@/core/icons'
 
 // 前端路由表
 const constantRouterComponents = {
@@ -64,15 +66,29 @@ const notFoundRouter = {
 
 // 根级菜单
 const rootRouter = {
-  key: '',
-  name: 'index',
-  path: '',
-  component: 'BasicLayout',
-  redirect: '/dashboard',
-  meta: {
-    title: '首页'
-  },
-  children: []
+  key: 'home',
+  name: 'Home',
+  path: '/',
+  component: BasicLayout,
+  meta: { title: 'menu.home' },
+  redirect: '/dashboard/workplace',
+  children: [
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      redirect: '/dashboard/workplace',
+      component: RouteView,
+      meta: { title: 'menu.dashboard', keepAlive: true, icon: bxAnaalyse },
+      children: [
+        {
+          path: '/dashboard/workplace',
+          name: 'Workplace',
+          component: () => import('@/views/dashboard/Workplace'),
+          meta: { title: 'menu.dashboard.workplace', keepAlive: true, permission: [ 'dashboard' ] }
+        }
+      ]
+    }
+  ]
 }
 
 /**
@@ -83,33 +99,6 @@ const rootRouter = {
 export const generatorDynamicRouter = (userInfo) => {
   return new Promise((resolve, reject) => {
     /* loginService.getCurrentUserNav(token).then(res => {
-      console.log('res', res)
-      const { result } = res
-      const menuNav = []
-      const childrenNav = []
-      //      后端数据, 根级树数组,  根级 PID
-      listToTree(result, childrenNav, 0)
-      rootRouter.children = childrenNav
-      menuNav.push(rootRouter)
-      console.log('menuNav', menuNav)
-      const routers = generator(menuNav)
-      routers.push(notFoundRouter)
-      console.log('routers', routers)
-      resolve(routers)
-    }).catch(err => {
-      reject(err)
-    }) */
-    userMenuTree(userInfo.id).then(res => {
-      // todo 组装用户菜单
-      const { status, data, message } = res
-      if (status === 1) {
-        return data
-      } else {
-        notification.error({
-          message: '错误',
-          description: message || '查询用户菜单失败'
-        })
-      }
       console.log('res', res)
       const { result } = res
       const menuNav = []
@@ -125,7 +114,83 @@ export const generatorDynamicRouter = (userInfo) => {
       resolve(routers)
     }).catch(err => {
       reject(err)
+    }) */
+    userMenuTree(userInfo.id).then(res => {
+      console.log('用户菜单', res)
+      const { status, data, message } = res
+      if (status === 1) {
+        if (_.isNil(data) || data.length <= 0) {
+          notification.warn({
+            message: '警告',
+            description: '用户未分配菜单'
+          })
+          reject(new Error('用户未分配菜单'))
+        }
+        const menuNav = []
+        debugger
+        const routers = buildUserMenuTree(data)
+        console.log('用户菜单树', routers)
+        rootRouter.children = rootRouter.children.concat(routers)
+        menuNav.push(rootRouter)
+        menuNav.push(notFoundRouter)
+        console.log('动态路由', menuNav)
+        resolve(menuNav)
+      } else {
+        notification.error({
+          message: '错误',
+          description: message || '查询用户菜单失败'
+        })
+        reject(new Error(message || '查询用户菜单失败'))
+      }
+    }).catch(err => {
+      reject(err)
     })
+  })
+}
+
+/**
+ * 构建用户菜单树
+ * @param menus
+ * @returns {*}
+ */
+export const buildUserMenuTree = (menus) => {
+  return menus.map(item => {
+    const { title, hidden, hideChildren, hiddenHeaderContent, target, icon } = item || {}
+    const currentRouter = {
+      key: item.id,
+      path: item.path,
+      name: item.name,
+      component: () => import(`@/views/${item.component}`),
+      meta: {
+        title: title,
+        icon: icon || undefined,
+        hiddenHeaderContent: hiddenHeaderContent || false,
+        target: target || undefined,
+        keepAlive: item.keepAlive || false
+      }
+    }
+    // 是否设置了隐藏菜单
+    if (hidden === 1) {
+      currentRouter.hidden = true
+    }
+    // 是否设置了隐藏子菜单
+    if (hideChildren === 1) {
+      currentRouter.hideChildrenInMenu = true
+    }
+    // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
+    if (!currentRouter.path.startsWith('http')) {
+      currentRouter.path = currentRouter.path.replace('//', '/')
+    }
+    // 重定向
+    item.redirect && (currentRouter.redirect = item.redirect)
+    // 是否有子菜单，并递归处理
+    if (item.children && item.children.length > 0) {
+      // 递归处理
+      if (!_.isNil(item.children) && item.children.length > 0) {
+        currentRouter.children = buildUserMenuTree(item.children)
+      }
+    }
+    return currentRouter
   })
 }
 
@@ -187,6 +252,7 @@ export const generator = (routerMap, parent) => {
  * @param tree 树
  * @param parentId 父ID
  */
+// eslint-disable-next-line no-unused-vars
 const listToTree = (list, tree, parentId) => {
   list.forEach(item => {
     // 判断是否为父级菜单
