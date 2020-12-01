@@ -19,10 +19,10 @@
             <a-input
               size="large"
               type="text"
-              placeholder="账户: admin"
+              placeholder="请输入用户名"
               v-decorator="[
                 'username',
-                {rules: [{ required: true, message: '请输入帐户名或邮箱地址' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
+                {rules: [{ required: true, message: '请输入用户名' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
               ]"
             >
               <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
@@ -32,7 +32,7 @@
           <a-form-item>
             <a-input-password
               size="large"
-              placeholder="密码: admin or ant.design"
+              placeholder="请输入密码"
               v-decorator="[
                 'password',
                 {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
@@ -89,14 +89,15 @@
         </a-tab-pane>
       </a-tabs>
 
-      <a-form-item>
+      <!-- todo 自动登录-->
+      <!--<a-form-item>
         <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">自动登录</a-checkbox>
         <router-link
           :to="{ name: 'recover', params: { user: 'aaa'} }"
           class="forge-password"
           style="float: right;"
         >忘记密码</router-link>
-      </a-form-item>
+      </a-form-item>-->
 
       <a-form-item style="margin-top:24px">
         <a-button
@@ -109,7 +110,8 @@
         >确定</a-button>
       </a-form-item>
 
-      <div class="user-login-other">
+      <!--todo 三方登录-->
+      <!--<div class="user-login-other">
         <span>其他登录方式</span>
         <a>
           <a-icon class="item-icon" type="alipay-circle"></a-icon>
@@ -120,9 +122,9 @@
         <a>
           <a-icon class="item-icon" type="weibo-circle"></a-icon>
         </a>
-        <!--todo 屏蔽注册-->
-        <!--<router-link class="register" :to="{ name: 'register' }">注册账户</router-link>-->
-      </div>
+        &lt;!&ndash;todo 屏蔽注册&ndash;&gt;
+        &lt;!&ndash;<router-link class="register" :to="{ name: 'register' }">注册账户</router-link>&ndash;&gt;
+      </div>-->
     </a-form>
 
     <two-step-captcha

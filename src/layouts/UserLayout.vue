@@ -18,9 +18,9 @@
 
       <div class="footer">
         <div class="links">
-          <a href="_self">帮助</a>
-          <a href="_self">隐私</a>
-          <a href="_self">条款</a>
+          <a href="javascript: void(0)">帮助</a>
+          <a href="javascript: void(0)">隐私</a>
+          <a href="javascript: void(0)">条款</a>
         </div>
         <div class="copyright">
           Copyright &copy; 2020

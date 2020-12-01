@@ -7,8 +7,8 @@ printConsoleLog.print = function () {
   if (process.env.NODE_ENV === 'development') {
     console.log(chalk.italic.yellow(figlet.textSync('Cloud Miao', {
       font: 'big',
-      horizontalLayout: 'fitted',
-      verticalLayout: 'default',
+      horizontalLayout: 'full',
+      verticalLayout: 'full',
       width: 80,
       whitespaceBreak: true
     })))
