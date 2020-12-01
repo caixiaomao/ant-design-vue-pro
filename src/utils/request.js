@@ -41,13 +41,25 @@ const errorHandler = (error) => {
   return Promise.reject(error)
 }
 
+// 无需传递 token 的 urls
+const noNeedTokenUrls = ['/api/validate/code', '/oauth/token']
+// 检查 url 是否需要 token
+const checkNoNeedToken = (url) => {
+  for (let i = 0; i < noNeedTokenUrls.length; i++) {
+    if (url.indexOf(noNeedTokenUrls[i]) > -1) {
+      return true
+    }
+  }
+  return false
+}
+
 // request interceptor
 request.interceptors.request.use(config => {
   const token = storage.get(ACCESS_TOKEN)
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
-  if (token) {
-    config.headers['Access-Token'] = token
+  if (token && !checkNoNeedToken(config.url)) {
+    config.headers['Authorization'] = 'Basic ' + token
   }
   return config
 }, errorHandler)
