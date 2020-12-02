@@ -29,3 +29,29 @@ export function validateCode (type) {
     method: 'GET'
   })
 }
+
+/**
+ * 在线用户列表
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function onlineUsers (data) {
+  return axios({
+    url: `${API_PREFIX.AUTH_SERVICE}/api/auth/onlineUsers`,
+    method: 'POST',
+    data: data
+  })
+}
+
+/**
+ * 强制下线
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function forceLogout (params) {
+  return axios({
+    url: `${API_PREFIX.AUTH_SERVICE}/api/auth/forceLogout`,
+    method: 'GET',
+    params: params
+  })
+}

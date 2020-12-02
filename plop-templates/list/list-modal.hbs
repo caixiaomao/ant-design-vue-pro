@@ -260,7 +260,7 @@ export default {
         if (status === 1) {
           return data
         } else {
-          this.$message.error(res.message)
+          this.$message.error(message)
         }
         this.loading = false
       }).catch(err => {

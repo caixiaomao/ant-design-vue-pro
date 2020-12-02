@@ -20,7 +20,7 @@ export const API_PREFIX = {
  * @type {{CLIENT_SECRET: string, CLIENT_ID: string, GRANT_TYPE: string}}
  */
 export const LOGIN_CONFIG = {
-  CLIENT_ID: 'admin',
+  CLIENT_ID: 'admin_app',
   CLIENT_SECRET: '21232f297a57a5a743894a0e4a801fc3',
   GRANT_TYPE: 'password'
 }
