@@ -268,6 +268,7 @@ export default {
               const { status, message } = res
               if (status === 1) {
                 that.$message.success('强制下线成功')
+                that.loadData({})
               } else {
                 that.$message.error(message)
               }
