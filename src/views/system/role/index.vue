@@ -405,7 +405,6 @@ export default {
         onOk () {
           if (record.id) {
             deleteById(record.id).then(res => {
-              debugger
               const { status, message } = res
               if (status === 1) {
                 that.$message.success('删除成功')

@@ -5,6 +5,11 @@ const GitRevision = new GitRevisionPlugin()
 const buildDate = JSON.stringify(new Date().toLocaleString())
 const createThemeColorReplacerPlugin = require('./config/plugin.config')
 const printConsoleLog = require('./src/utils/consoleLog')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+// 定义gzip压缩文件类型
+const productionGzipExtensions = ['js', 'css']
+// 是否启用 gzip
+const enableGzip = process.env.VUE_GZIP === 'true'
 
 function resolve (dir) {
   return path.join(__dirname, dir)
@@ -40,19 +45,32 @@ const assetsCDN = {
 
 // vue.config.js
 const vueConfig = {
-  configureWebpack: {
-    // webpack plugins
-    plugins: [
-      // Ignore all locale files of moment.js
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new webpack.DefinePlugin({
-        APP_VERSION: `"${require('./package.json').version}"`,
-        GIT_HASH: JSON.stringify(getGitHash()),
-        BUILD_DATE: buildDate
-      })
-    ],
-    // if prod, add externals
-    externals: isProd ? assetsCDN.externals : {}
+  configureWebpack: config => {
+    const option = {
+      plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        new webpack.DefinePlugin({
+          APP_VERSION: `"${require('./package.json').version}"`,
+          GIT_HASH: JSON.stringify(getGitHash()),
+          BUILD_DATE: buildDate
+        })
+      ],
+      // if prod, add externals
+      externals: isProd ? assetsCDN.externals : {}
+    }
+    // todo 插件存在兼容性问题，暂时不要开启
+    if (enableGzip) {
+      option.plugins.push(
+        new CompressionWebpackPlugin({
+          filename: '[path].gz[query]',
+          algorithm: 'gzip',
+          test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+          threshold: 10240, // 超过10k的文件压缩
+          minRatio: 0.8 // 压缩比大于 0.8 才压缩
+        })
+      )
+    }
+    return option
   },
 
   chainWebpack: (config) => {
