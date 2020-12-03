@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper :title="false" content="在线用户">
+  <page-header-wrapper :title="false">
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">

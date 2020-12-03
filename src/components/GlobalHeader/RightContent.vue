@@ -50,10 +50,11 @@ export default {
   },
   mounted () {
     setTimeout(() => {
-      this.currentUser = {
+      /* this.currentUser = {
         // todo 用户名显示调整
         name: 'caixiaomao'
-      }
+      } */
+      this.currentUser = this.$store.getters.userInfo
     }, 1500)
   }
 }
