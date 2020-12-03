@@ -58,6 +58,10 @@ const vueConfig = {
       // if prod, add externals
       externals: isProd ? assetsCDN.externals : {}
     }
+    // add `ThemeColorReplacer` plugin to webpack plugins
+    if (process.env.VUE_APP_PREVIEW === 'true') {
+      option.plugins.push(createThemeColorReplacerPlugin())
+    }
     // todo 插件存在兼容性问题，暂时不要开启
     if (enableGzip) {
       option.plugins.push(
@@ -155,7 +159,8 @@ if (process.env.VUE_APP_PREVIEW === 'true') {
   // todo 启动时控制台打印信息
   printConsoleLog.print()
   // add `ThemeColorReplacer` plugin to webpack plugins
-  vueConfig.configureWebpack.plugins.push(createThemeColorReplacerPlugin())
+  // todo 屏蔽，移动到插件处加载
+  // vueConfig.configureWebpack.plugins.push(createThemeColorReplacerPlugin())
 }
 
 module.exports = vueConfig
