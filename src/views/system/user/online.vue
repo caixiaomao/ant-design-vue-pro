@@ -5,18 +5,18 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="名称">
-                <a-input v-model="queryParam.name" placeholder="名称"/>
+              <a-form-item label="姓名">
+                <a-input v-model="queryParam.name" placeholder="姓名"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="编码">
+              <a-form-item label="用户名">
                 <a-input v-model="queryParam.username" placeholder="用户名"/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="编码">
+                <a-form-item label="客户端">
                   <a-input v-model="queryParam.clientId" placeholder="客户端"/>
                 </a-form-item>
               </a-col>
