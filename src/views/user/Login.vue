@@ -268,12 +268,9 @@ export default {
               window.clearInterval(interval)
             }
           }, 1000)
-
-          const hide = this.$message.loading('验证码发送中..', 0)
           smsCode({ mobile: values.mobile }).then(res => {
             const { status, message, data } = res
             if (status === 1) {
-              setTimeout(hide, 2500)
               this.$notification['success']({
                 message: '提示',
                 description: '短信验证码获取成功，您的验证码为：' + data,
@@ -285,13 +282,11 @@ export default {
                 description: '短信验证码获取失败：' + message,
                 duration: 8
               })
-              setTimeout(hide, 1)
               clearInterval(interval)
               state.time = 60
               state.smsSendBtn = false
             }
           }).catch(err => {
-            setTimeout(hide, 1)
             clearInterval(interval)
             state.time = 60
             state.smsSendBtn = false
