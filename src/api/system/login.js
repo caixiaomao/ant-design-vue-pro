@@ -31,6 +31,19 @@ export function validateCode (type) {
 }
 
 /**
+ * 获取短信验证码
+ * @param type
+ * @returns {AxiosPromise}
+ */
+export function smsCode (params) {
+  return axios({
+    url: `${API_PREFIX.AUTH_SERVICE}/api/validate/code/sms`,
+    method: 'GET',
+    params: params
+  })
+}
+
+/**
  * 在线用户列表
  * @param data
  * @returns {AxiosPromise}

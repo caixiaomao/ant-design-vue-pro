@@ -63,7 +63,7 @@
         </a-tab-pane>
         <a-tab-pane key="tab2" tab="手机号登录">
           <a-form-item>
-            <a-input size="large" type="text" placeholder="手机号" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
+            <a-input size="large" type="text" placeholder="请输入手机号" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
               <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
           </a-form-item>
@@ -71,8 +71,8 @@
           <a-row :gutter="16">
             <a-col class="gutter-row" :span="16">
               <a-form-item>
-                <a-input size="large" type="text" placeholder="验证码" v-decorator="['captcha', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
-                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                <a-input size="large" type="text" placeholder="请输入短信验证码" v-decorator="['code', {rules: [{ required: true, message: '请输入短信验证码' }], validateTrigger: 'blur'}]">
+                  <a-icon slot="prefix" type="message" :style="{ color: 'rgba(0,0,0,.25)' }"/>
                 </a-input>
               </a-form-item>
             </a-col>
@@ -82,8 +82,27 @@
                 tabindex="-1"
                 :disabled="state.smsSendBtn"
                 @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && '获取验证码' || (state.time+' s')"
+                v-text="!state.smsSendBtn && '短信验证码' || (state.time+' s')"
               ></a-button>
+            </a-col>
+          </a-row>
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input
+                  size="large"
+                  placeholder="请输入验证码"
+                  v-decorator="[
+                    'validateCode',
+                    {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}
+                  ]"
+                >
+                  <a-icon slot="prefix" type="safety-certificate" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <img :src="imageBase64" alt="验证码" @click="validateCode" style="width: 105px">
             </a-col>
           </a-row>
         </a-tab-pane>
@@ -141,8 +160,9 @@ import md5 from 'md5'
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
+// eslint-disable-next-line no-unused-vars
 import { getSmsCaptcha, get2step } from '@/api/login'
-import { validateCode } from '@/api/system/login'
+import { validateCode, smsCode } from '@/api/system/login'
 
 export default {
   components: {
@@ -208,7 +228,7 @@ export default {
 
       state.loginBtn = true
 
-      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password', 'validateCode'] : ['mobile', 'captcha']
+      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password', 'validateCode'] : ['mobile', 'code', 'validateCode']
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
@@ -247,13 +267,26 @@ export default {
           }, 1000)
 
           const hide = this.$message.loading('验证码发送中..', 0)
-          getSmsCaptcha({ mobile: values.mobile }).then(res => {
-            setTimeout(hide, 2500)
-            this.$notification['success']({
-              message: '提示',
-              description: '验证码获取成功，您的验证码为：' + res.result.captcha,
-              duration: 8
-            })
+          smsCode({ mobile: values.mobile }).then(res => {
+            const { status, message, data } = res
+            if (status === 1) {
+              setTimeout(hide, 2500)
+              this.$notification['success']({
+                message: '提示',
+                description: '短信验证码获取成功，您的验证码为：' + data,
+                duration: 8
+              })
+            } else {
+              this.$notification['error']({
+                message: '提示',
+                description: '短信验证码获取失败：' + message,
+                duration: 8
+              })
+              setTimeout(hide, 1)
+              clearInterval(interval)
+              state.time = 60
+              state.smsSendBtn = false
+            }
           }).catch(err => {
             setTimeout(hide, 1)
             clearInterval(interval)
