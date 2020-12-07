@@ -6,10 +6,15 @@ import { API_PREFIX, LOGIN_CONFIG } from '@/config/system'
 * @param body 参数
 */
 export function token (params) {
-  params.grant_type = LOGIN_CONFIG.GRANT_TYPE
+  // 登录方式，默认为密码登录
+  if (params[LOGIN_CONFIG.GRANT_TYPE_MOBILE]) {
+    params.grant_type = LOGIN_CONFIG.GRANT_TYPE_MOBILE
+  } else {
+    params.grant_type = LOGIN_CONFIG.GRANT_TYPE_PASSWORD
+  }
   return axios({
     url: `${API_PREFIX.AUTH_SERVICE}/oauth/token`,
-    method: 'POST',
+    method: 'GET',
     params: params,
     headers: {
       'Authorization': 'Basic ' + window.btoa(LOGIN_CONFIG.CLIENT_ID + ':' + LOGIN_CONFIG.CLIENT_SECRET)

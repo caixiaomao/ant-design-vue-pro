@@ -235,7 +235,10 @@ export default {
           const loginParams = { ...values }
           delete loginParams.username
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.password = md5(values.password)
+          // 密码登录时才做密码加密
+          if (loginParams.password) {
+            loginParams.password = md5(values.password)
+          }
           loginParams.validateCodeId = this.validateCodeId
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
