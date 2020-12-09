@@ -74,6 +74,8 @@ const vueConfig = {
         })
       )
     }
+    // 是否开启 sourcemap
+    option.devtool = process.env.NODE_ENV === 'development' ? 'source-map' : undefined
     return option
   },
 
