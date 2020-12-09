@@ -5,6 +5,7 @@ import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
 import { userMenuTree } from '@/api/system/user'
 import notification from 'ant-design-vue/es/notification'
 import * as _ from 'lodash'
+// eslint-disable-next-line no-unused-vars
 import { bxAnaalyse } from '@/core/icons'
 
 // 前端路由表
@@ -70,21 +71,22 @@ const rootRouter = {
   name: 'Home',
   path: '/',
   component: BasicLayout,
-  meta: { title: 'menu.home' },
-  redirect: '/dashboard/workplace',
+  meta: { title: '首页' },
+  redirect: '/home',
   children: [
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      redirect: '/dashboard/workplace',
+      path: '/home',
+      name: 'Home',
+      redirect: '/home/index',
       component: RouteView,
-      meta: { title: 'menu.dashboard', keepAlive: true, icon: bxAnaalyse },
+      hideChildrenInMenu: true,
+      meta: { title: '首页', keepAlive: true, icon: 'home' },
       children: [
         {
-          path: '/dashboard/workplace',
-          name: 'Workplace',
+          path: '/home/index',
+          name: 'HomeIndex',
           component: () => import('@/views/dashboard/Workplace'),
-          meta: { title: 'menu.dashboard.workplace', keepAlive: true, permission: [ 'dashboard' ] }
+          meta: { title: '首页', hidden: true, keepAlive: true }
         }
       ]
     }

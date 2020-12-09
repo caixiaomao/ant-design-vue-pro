@@ -1,8 +1,8 @@
 <template>
-  <a-result status="403" title="403" sub-title="Sorry, you don't have access to this page.">
+  <a-result status="403" title="403" sub-title="您无权访问此页面 o(￣┰￣*)ゞ">
     <template #extra>
       <a-button type="primary" @click="toHome">
-        Back Home
+        返回首页
       </a-button>
     </template>
   </a-result>
