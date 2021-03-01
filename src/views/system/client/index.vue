@@ -182,6 +182,7 @@
               <a-select-option key="authorization_code">授权码</a-select-option>
               <a-select-option key="client_credentials">客户端认证</a-select-option>
               <a-select-option key="implicit">简化模式</a-select-option>
+              <a-select-option key="mobile">手机登录</a-select-option>
             </a-select>
           </a-form-model-item>
           <a-form-model-item
